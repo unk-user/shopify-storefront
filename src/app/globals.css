@@ -67,7 +67,4 @@
   body {
     @apply bg-background text-foreground h-full bg-storefront-background;
   }
-  main {
-    @apply mt-16
-  }
 }

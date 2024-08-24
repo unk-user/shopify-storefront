@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, DM_Sans } from 'next/font/google';
 import { ShoppingBag, User } from 'react-feather';
 import './globals.css';
 import Link from 'next/link';
 
 const inter = Inter({ subsets: ['latin'] });
+
+const sans = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -21,10 +23,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <nav className="fixed top-0 left-0 right-0 flex items-center h-16 px-4 border-b gap-x-8">
-          <h3 className="text-xl font-semibold text-store">KEYCHRON</h3>
-          <div className="space-x-4 uppercase text-base font-medium">
+      <body className={`${inter.className} ${sans.variable}`}>
+        <nav className="top-0 left-0 right-0 flex items-center h-16 px-16 border-b gap-x-8">
+          <h3 className="text-lg font-bold font-sans">KEYCHRON</h3>
+          <div className="space-x-4 uppercase text-sm font-medium">
             {navlinks.map((link) => (
               <Link href={link} key={link}>
                 {link}
@@ -32,10 +34,10 @@ export default function RootLayout({
             ))}
           </div>
           <div className="ml-auto space-x-4 flex items-center">
-            <div className="flex items-center">
-              <ShoppingBag className="mr-1" strokeWidth={'0.115rem'} /> Cart (0)
-            </div>
             <User />
+            <div className="flex items-center text-sm">
+              <ShoppingBag className="mr-1" strokeWidth="0.1rem" /> Cart (0)
+            </div>
           </div>
         </nav>
         <main>{children}</main>
