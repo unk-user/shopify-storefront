@@ -232,22 +232,9 @@ export async function getCollections(): Promise<Collection[]> {
     tags: [TAGS.collections],
   });
   const shopifyCollections = removeEdgesAndNodes(res.body?.data?.collections);
-  const collections = [
-    {
-      handle: '',
-      title: 'All',
-      description: 'All products',
-      seo: {
-        title: 'All',
-        description: 'All products',
-      },
-      path: '', //TODO: DONT FORGET TO ADD PATHS,
-      updatedAt: new Date().toISOString(),
-    },
-    ...reshapeCollections(shopifyCollections).filter(
-      (collection) => !collection.handle.startsWith('hidden')
-    ),
-  ];
+  const collections = reshapeCollections(shopifyCollections).filter(
+    (collection) => !collection.handle.startsWith('hidden')
+  );
 
   return collections;
 }
@@ -257,14 +244,16 @@ export async function getMenu(handle: string): Promise<Menu[]> {
     query: getMenuQuery,
     tags: [TAGS.collections],
     variables: {
-      handle
-    }
+      handle,
+    },
   });
 
   return (
     res.body?.data?.menu?.items.map((item: { title: string; url: string }) => ({
       title: item.title,
-      path: item.url.replace(domain, '').replace('/collections', '/search').replace('/pages', '')
+      path: item.url
+        .replace(domain, '/')
+        .replace('/pages', '/')
     })) || []
   );
 }
@@ -313,6 +302,7 @@ export async function getProducts({
       sortKey,
     },
   });
+  console.log('fetching')
 
   return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
 }
@@ -321,8 +311,16 @@ export async function getProducts({
 export async function revalidate(req: NextRequest): Promise<NextResponse> {
   // We always need to respond with a 200 status code to Shopify,
   // otherwise it will continue to retry the request.
-  const collectionWebhooks = ['collections/create', 'collections/delete', 'collections/update'];
-  const productWebhooks = ['products/create', 'products/delete', 'products/update'];
+  const collectionWebhooks = [
+    'collections/create',
+    'collections/delete',
+    'collections/update',
+  ];
+  const productWebhooks = [
+    'products/create',
+    'products/delete',
+    'products/update',
+  ];
   const topic = headers().get('x-shopify-topic') || 'unknown';
   const secret = req.nextUrl.searchParams.get('secret');
   const isCollectionUpdate = collectionWebhooks.includes(topic);
@@ -348,4 +346,3 @@ export async function revalidate(req: NextRequest): Promise<NextResponse> {
 
   return NextResponse.json({ status: 200, revalidated: true, now: Date.now() });
 }
-
