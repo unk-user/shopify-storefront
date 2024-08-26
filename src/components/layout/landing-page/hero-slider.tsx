@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAnimate } from 'framer-motion';
 import Image from 'next/image';
-import { Button } from './ui/button';
+import { Button } from '../../ui/button';
 import { ChevronRight, ChevronLeft } from 'react-feather';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -67,6 +67,8 @@ const SlideContent = React.forwardRef<
     </Button>
   </div>
 ));
+SlideContent.displayName = 'SlideContent';
+
 
 export function HeroSlider({ slides }: { slides: Slides }) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -102,9 +104,9 @@ export function HeroSlider({ slides }: { slides: Slides }) {
           contentRef.current[newSlide]!,
           {
             opacity: [0, 1],
-            y: ['50%', '0%'],
+            y: ['20%', '0%'],
           },
-          { type: 'tween', delay: 0.5, duration: 0.3, ease: 'easeOut' }
+          { type: 'tween', delay: 0.5, duration: 0.4, ease: 'easeOut' }
         ),
         animate(
           containerRef.current[newSlide]!,
@@ -114,7 +116,7 @@ export function HeroSlider({ slides }: { slides: Slides }) {
           },
           { duration: TRANSITION_DURATION, ease: 'easeInOut' }
         ),
-      ])
+      ]);
 
       setCurrentSlide(newSlide);
     }
@@ -130,7 +132,7 @@ export function HeroSlider({ slides }: { slides: Slides }) {
   );
 
   return (
-    <section>
+    <section className='w-full'>
       <div className="w-full h-[calc(100vh-64px)] relative overflow-hidden flex items-center justify-center">
         <div className="relative h-full w-full" ref={scope}>
           {slides.map((slide, index) => (
@@ -151,12 +153,12 @@ export function HeroSlider({ slides }: { slides: Slides }) {
               <Image
                 src={slide.img}
                 alt={slide.header}
-                className="w-full h-full z-0 object-cover"
-                sizes='(100vw, 100vh)'
-                priority
+                className="w-full h-full object-cover"
+                sizes="(100vw, 100vh)"
+                priority={true}
                 fill
               />
-              <div className="relative w-full h-full z-20 from-black/85 via-black/10 to-black/85 bg-gradient-to-r">
+              <div className="relative w-full h-full from-black/85 via-black/10 to-black/85 bg-gradient-to-r">
                 <SlideContent
                   ref={(el) => {
                     contentRef.current[index] = el;
