@@ -8,7 +8,6 @@ const productFragment = /* GraphQL */ `
     availableForSale
     title
     description
-    descriptionHtml
     options {
       id
       name
@@ -33,6 +32,9 @@ const productFragment = /* GraphQL */ `
           selectedOptions {
             name
             value
+          }
+          image {
+            ...image
           }
           price {
             amount
