@@ -28,6 +28,7 @@ const productFragment = /* GraphQL */ `
         node {
           id
           title
+          sku
           availableForSale
           selectedOptions {
             name
