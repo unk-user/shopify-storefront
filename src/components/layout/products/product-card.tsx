@@ -7,9 +7,8 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo, useState } from 'react';
-
-type selectedOptions = Record<string, string | null>;
+import { useCallback, useMemo } from 'react';
+import useProductOptions from './useProductOptions';
 
 const formatPrice = (amount: string, currencycode: string) => {
   return Intl.NumberFormat('fr-FR', {
@@ -58,34 +57,15 @@ export function ProductCard({
   priority: boolean;
 }) {
   const router = useRouter();
-  const [selectedOptions, setSelectedOptions] = useState<selectedOptions>(
-    null!
-  );
+  const { selectedOptions, switchOption, selectedVariant } = useProductOptions({
+    product,
+  });
 
   const productLink = `/product/${product.handle}`;
-
-  const handleOptionChange = useCallback(
-    (value: string, optionName: string) => {
-      setSelectedOptions((prev) => ({ ...prev, [optionName]: value }));
-    },
-    []
-  );
 
   const handleCardClick = useCallback(() => {
     router.push(productLink);
   }, [router, productLink]);
-
-  const selectedVariant = useMemo(() => {
-    if (!selectedOptions) return null;
-
-    return product.variants.find((variant) => {
-      return variant.selectedOptions.every((option) =>
-        selectedOptions[option.name]
-          ? option.value === selectedOptions[option.name]
-          : true
-      );
-    });
-  }, [product.variants, selectedOptions]);
 
   const formattedPrice = useMemo(
     () =>
@@ -147,7 +127,7 @@ export function ProductCard({
             key={option.name}
             option={option}
             selectedValue={selectedOptions && selectedOptions[option.name]}
-            setValue={(value: string) => handleOptionChange(value, option.name)}
+            setValue={(value: string) => switchOption(value, option.name)}
           />
         ))}
       </div>
