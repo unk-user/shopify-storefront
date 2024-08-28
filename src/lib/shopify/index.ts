@@ -197,7 +197,7 @@ export async function getCollection(
   return reshapeCollection(res.body?.data?.collection);
 }
 
-export async function getCollectionProduct({
+export async function getCollectionProducts({
   collection,
   reverse,
   sortKey,
