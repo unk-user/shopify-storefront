@@ -133,7 +133,7 @@ export function HeroSlider({ slides }: { slides: Slides }) {
 
   return (
     <section className='w-full'>
-      <div className="w-full h-[calc(100vh-64px)] relative overflow-hidden flex items-center justify-center">
+      <div className="w-full h-[calc(100vh-56px)] relative overflow-hidden flex items-center justify-center">
         <div className="relative h-full w-full" ref={scope}>
           {slides.map((slide, index) => (
             <article

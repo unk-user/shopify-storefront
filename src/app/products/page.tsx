@@ -17,31 +17,29 @@ export default async function ProductsPage({
   const resultsText = products.length > 1 ? 'results' : 'result';
 
   return (
-    <section className="py-12 max-w-screen-2xl mx-auto">
-      <div>
-        <header className="mb-4 flex items-center">
-          {searchValue ? (
-            <h1 className="text-lg">
-              {products.length === 0
-                ? 'There are no products that match'
-                : `Showing ${products.length} ${resultsText} for `}
-              <span className="font-medium">&quot;{searchValue}&quot;</span>
-            </h1>
-          ) : null}
-          <SortDropdown />
-        </header>
-        {products.length > 0 ? (
-          <ProductsGrid>
-            {products.map((product, index) => (
-              <ProductCard
-                product={product}
-                key={product.id}
-                priority={index < 3}
-              />
-            ))}
-          </ProductsGrid>
+    <>
+      <header className="mb-4 flex items-center">
+        {searchValue ? (
+          <h1 className="text-lg">
+            {products.length === 0
+              ? 'There are no products that match'
+              : `Showing ${products.length} ${resultsText} for `}
+            <span className="font-medium">&quot;{searchValue}&quot;</span>
+          </h1>
         ) : null}
-      </div>
-    </section>
+        <SortDropdown />
+      </header>
+      {products.length > 0 ? (
+        <ProductsGrid>
+          {products.map((product, index) => (
+            <ProductCard
+              product={product}
+              key={product.id}
+              priority={index < 3}
+            />
+          ))}
+        </ProductsGrid>
+      ) : null}
+    </>
   );
 }

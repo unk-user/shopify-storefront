@@ -8,9 +8,11 @@ export default function ProductsLayout({
 }) {
   return (
     <div className="px-4 md:px-8 xl:px-16 bg-storefront-primary min-h-screen">
-      <Suspense fallback={null}>
-        <ChildrenWrapper>{children}</ChildrenWrapper>
-      </Suspense>
+      <section className="py-12 max-w-screen-2xl mx-auto">
+        <Suspense fallback={null}>
+          <ChildrenWrapper>{children}</ChildrenWrapper>
+        </Suspense>
+      </section>
     </div>
   );
 }
