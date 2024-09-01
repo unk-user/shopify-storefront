@@ -20,3 +20,10 @@ export const ensureStartsWith = (stringToCheck: string, startsWith: string) =>
   stringToCheck.startsWith(startsWith)
     ? stringToCheck
     : `${startsWith}${stringToCheck}`;
+
+export const formatPrice = (amount: string, currencycode: string) => {
+  return Intl.NumberFormat('fr-FR', {
+    style: 'currency',
+    currency: currencycode,
+  }).format(Number(amount));
+};

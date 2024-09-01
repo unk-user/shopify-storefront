@@ -1,8 +1,9 @@
 import { getMenu } from '@/lib/shopify';
-import { ShoppingBag, User } from 'react-feather';
+import { ShoppingBag } from 'react-feather';
 import { NavbarMenu } from './menu';
 import Link from 'next/link';
 import { NavWrapper } from './nav-wrapper';
+import { CartSheet } from '@/components/cart/cart-sheet';
 
 export async function Navbar() {
   const menuItems = await getMenu('nextjs-frontend-header-menu');
@@ -15,10 +16,7 @@ export async function Navbar() {
           KEYCHRON
         </Link>
         <NavbarMenu initialItems={menuItems} />
-        <div className="ml-auto space-x-4 flex items-center">
-          <User />
-          <ShoppingBag className="mr-1" strokeWidth="0.1rem" />
-        </div>
+        <CartSheet />
       </div>
     </NavWrapper>
   );
