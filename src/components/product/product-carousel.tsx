@@ -6,19 +6,20 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import { cn } from '@/lib/utils';
 import { Product } from '@/lib/shopify/types';
 import { type CarouselApi } from '@/components/ui/carousel';
-import Image from 'next/image';
+import { useProduct } from './product-context';
 import { useCallback, useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
-import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
+import { findSelectedVariant } from '@/lib/productUtils';
 
 //TODO: IMPROVE STYLING
 
 export function ProductCarousel({ product }: { product: Product }) {
   const [api, setApi] = useState<CarouselApi>();
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const searchParams = useSearchParams();
+  const { state } = useProduct();
 
   const handleSelect = useCallback(() => {
     if (api) {
@@ -34,14 +35,9 @@ export function ProductCarousel({ product }: { product: Product }) {
   }, [api, handleSelect]);
 
   useEffect(() => {
-    if (!searchParams || !api) return;
+    if (!state || !api) return;
 
-    const selectedVariant = product.variants.find((variant) =>
-      variant.selectedOptions.every((option) => {
-        const paramValue = searchParams.get(option.name);
-        return paramValue ? option.value === paramValue : true;
-      })
-    );
+    const selectedVariant = findSelectedVariant(product, state);
 
     if (selectedVariant) {
       const variantIndex = product.images.findIndex(
@@ -49,7 +45,7 @@ export function ProductCarousel({ product }: { product: Product }) {
       );
       if (variantIndex !== -1) api.scrollTo(variantIndex);
     }
-  }, [searchParams, product.variants, product.images, api]);
+  }, [state, product.variants, product.images, api]);
 
   return (
     <div className="flex flex-col gap-2 w-full h-full">

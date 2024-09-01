@@ -1,5 +1,6 @@
-import { ProductOptions } from '@/components/layout/product/options';
-import { ProductCarousel } from '@/components/layout/product/product-carousel';
+import { AddToCart } from '@/components/cart/add-to-cart';
+import { ProductOptions } from '@/components/product/options';
+import { ProductCarousel } from '@/components/product/product-carousel';
 import { getProduct } from '@/lib/shopify';
 
 //TODO: MAKE RESPONSIVE & REFACTOR TO SMALL COMPONENTS
@@ -28,6 +29,7 @@ export default async function ProductPage({
           <p className="mt-2 text-sm">SKU: {product?.variants[0].sku}</p>
           <p className="mt-4 text-2xl font-bold">{formattedPrice}</p>
           <ProductOptions product={product} />
+          <AddToCart product={product} />
         </div>
       </section>
     );
