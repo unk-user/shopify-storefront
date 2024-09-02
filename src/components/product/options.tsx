@@ -2,33 +2,19 @@
 import { Product } from '@/lib/shopify/types';
 import { cn } from '@/lib/utils';
 import { useProduct, useUpdateURL } from '@/components/product/product-context';
-
-type Combination = {
-  id: string;
-  availableForSale: boolean;
-  [key: string]: string | boolean;
-};
+import useProductOptions from '../useProductOptions';
 
 export function ProductOptions({ product }: { product: Product }) {
   const { state, updateOption } = useProduct();
+  const { hasNoOptionsOrJustOneOption, getOptionStatus } = useProductOptions({
+    product,
+    state,
+  });
   const updateUrl = useUpdateURL();
-
-  const hasNoOptionsOrJustOneOption =
-    !product.options.length ||
-    (product.options.length === 1 && product.options[0]?.values.length === 1);
 
   if (hasNoOptionsOrJustOneOption) {
     return null;
   }
-
-  const combinations: Combination[] = product.variants.map((variant) => ({
-    id: variant.id,
-    availableForSale: variant.availableForSale,
-    ...variant.selectedOptions.reduce(
-      (acc, option) => ({ ...acc, [option.name.toLowerCase()]: option.value }),
-      {}
-    ),
-  }));
 
   return (
     <div className="flex flex-col gap-2 mt-8">
@@ -41,28 +27,10 @@ export function ProductOptions({ product }: { product: Product }) {
             <dd className="flex flex-wrap gap-3">
               {option.values.map((value) => {
                 const optionNameLowerCase = option.name.toLowerCase();
-
-                // Base option params on current selectedOptions so we can preserve any other param state.
-                const optionParams = { ...state, [optionNameLowerCase]: value };
-
-                // Filter out invalid options and check if the option combination is available for sale.
-                const filtered = Object.entries(optionParams).filter(
-                  ([key, value]) =>
-                    product.options.find(
-                      (option) =>
-                        option.name.toLowerCase() === key &&
-                        option.values.includes(value)
-                    )
+                const { isActive, isAvailableForSale } = getOptionStatus(
+                  optionNameLowerCase,
+                  value
                 );
-                const isAvailableForSale = combinations.find((combination) =>
-                  filtered.every(
-                    ([key, value]) =>
-                      combination[key] === value && combination.availableForSale
-                  )
-                );
-
-                // The option is active if it's in the selected options.
-                const isActive = state[optionNameLowerCase] === value;
 
                 return (
                   <button

@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { useCart } from '../cart/cart-context';
 import { useFormState } from 'react-dom';
 import { addItem } from '../cart/actions';
-import { useDrawer } from './drawer-context';
+import { ProductState } from '@/lib/productUtils';
 
 const SubmitButton = ({
   availableForSale = true,
@@ -25,10 +25,9 @@ const SubmitButton = ({
   return <Button aria-label="Add to cart">Add to Cart</Button>;
 };
 
-export function AddToCart({ product }: { product: Product }) {
+export function AddToCart({ product, state }: { product: Product, state: ProductState }) {
   const { variants, availableForSale } = product;
   const { addCartItem } = useCart();
-  const { productState: state } = useDrawer();
   const [message, formAction] = useFormState(addItem, null);
 
   const variant = variants.find((variant: ProductVariant) =>

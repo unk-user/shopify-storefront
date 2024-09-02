@@ -8,7 +8,7 @@ export function findSelectedVariant(
 ): ProductVariant | undefined {
   return product.variants.find((variant) =>
     variant.selectedOptions.every(
-      (option) => selectedOptions[option.name.toLowerCase()] === option.value
+      (option) => selectedOptions ? selectedOptions[option.name.toLowerCase()] === option.value : false
     )
   );
 }

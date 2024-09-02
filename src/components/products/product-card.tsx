@@ -69,6 +69,10 @@ export function ProductCard({
     product.priceRange.minVariantPrice.currencyCode
   );
 
+  const hasNoVariantAvailable = useMemo(() => {
+    return product.variants.every((variant) => !variant.availableForSale);
+  }, [product.variants]);
+
   return (
     <article className="h-full flex flex-col hover:cursor-pointer">
       <Link href={productLink}>
