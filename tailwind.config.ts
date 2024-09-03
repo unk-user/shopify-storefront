@@ -67,10 +67,11 @@ const config = {
           foreground: 'hsl(var(--card-foreground))',
         },
         storefront: {
-          background: '#fbfbfe',
-          primary: '#e6e3e8',
-          secondary: '#ffffff',
-          accent: '#fb4b1d',
+          background: '#1F1F1F',
+          text: '#FFFFFF',
+          primary: '#4C4C4C',
+          secondary: '#353535',
+          accent: '#E85C21',
         },
       },
       borderRadius: {
