@@ -1,23 +1,16 @@
-import { getMenu } from '@/lib/shopify';
-import { ShoppingBag } from 'react-feather';
-import { NavbarMenu } from './menu';
-import Link from 'next/link';
-import { NavWrapper } from './nav-wrapper';
-import { CartSheet } from '@/components/cart/cart-sheet';
+import { NavbarWrapper } from './navbar-wrapper';
+import { NavMenu } from './menu';
+import { SearchButton } from './search-button';
+import { CartButton } from './cart-button';
 
-export async function Navbar() {
-  const menuItems = await getMenu('nextjs-frontend-header-menu');
-  console.log(menuItems);
-
+export function Navbar() {
   return (
-    <NavWrapper>
-      <div className="flex items-center py-2 gap-x-8 mx-auto max-w-screen-2xl">
-        <Link href="/" className="text-lg font-bold font-sans">
-          KEYCHRON
-        </Link>
-        <NavbarMenu initialItems={menuItems} />
-        <CartSheet />
+    <NavbarWrapper>
+      <NavMenu />
+      <div className="ml-auto space-x-1 py-2">
+        <SearchButton />
+        <CartButton />
       </div>
-    </NavWrapper>
+    </NavbarWrapper>
   );
 }
