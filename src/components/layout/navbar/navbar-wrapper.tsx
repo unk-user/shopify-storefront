@@ -34,11 +34,13 @@ export function NavbarWrapper({ children }: { children: React.ReactNode }) {
       <header
         ref={headerRef}
         className={cn([
-          'z-30 inline-block group/header mt-[28px] sticky top-0 w-full px-4 md:px-8 xl:px-20 bg-background data-[sticky]:bg-secondary data-[sticky]:border-b border-input transition-all duration-200',
+          'z-30 inline-block group/header mt-4 md:mt-7 sticky top-0 w-full px-4 md:px-8 xl:px-20 bg-background data-[sticky]:bg-secondary data-[sticky]:border-b border-input transition-colors duration-200',
           collectionMenuOpen ? '' : '',
         ])}
       >
-        <div className="flex items-stretch h-[60px] max-w-screen-2xl mx-auto">{children}</div>
+        <div className="flex items-stretch h-[60px] max-w-screen-2xl mx-auto">
+          {children}
+        </div>
       </header>
       <div
         className={cn([

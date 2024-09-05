@@ -22,7 +22,7 @@ const itemsVariants: Variants = {
 export function CollectionMenu({
   collections,
 }: {
-  collections: NavbarCollection | undefined;
+  collections: NavbarCollection;
 }) {
   const { isOpen, open, close } = useSubmenu();
 
@@ -52,7 +52,7 @@ export function CollectionMenu({
           variants={{ open: { transition: { staggerChildren: 0.1 } } }}
           className="h-full w-full pb-8 grid grid-cols-5 gap-12 max-w-screen-2xl mx-auto"
         >
-          {collections?.map((collection) => (
+          {collections.map((collection) => (
             <motion.div
               variants={itemsVariants}
               key={collection.handle}
