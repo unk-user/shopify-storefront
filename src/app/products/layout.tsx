@@ -7,7 +7,7 @@ export default function ProductsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="px-4 md:px-8 xl:px-16 bg-storefront-primary min-h-screen">
+    <div className="px-4 md:px-8 xl:px-16 h-full">
       <section className="py-12 max-w-screen-2xl mx-auto">
         <Suspense fallback={null}>
           <ChildrenWrapper>{children}</ChildrenWrapper>

@@ -1,6 +1,6 @@
-import { ProductsGrid } from '@/components/layout/products/grid';
-import { ProductCard } from '@/components/layout/products/product-card';
-import { SortDropdown } from '@/components/layout/products/sort';
+import { ProductsGrid } from '@/components/products/grid';
+import { ProductCard } from '@/components/products/product-card';
+import { SortDropdown } from '@/components/products/sort';
 import { defaultSort, sorting } from '@/lib/constants';
 import { getCollectionProducts } from '@/lib/shopify';
 

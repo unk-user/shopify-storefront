@@ -30,7 +30,7 @@ export default async function RootLayout({
       <body className={`${inter.className} ${sans.variable}`}>
         <CartProvider cartPromise={cart}>
           <Navbar />
-          <main>{children}</main>
+          <main className="h-full">{children}</main>
         </CartProvider>
       </body>
     </html>
