@@ -119,6 +119,17 @@ export type ShopifyCollectionProductsOperation = {
   };
 };
 
+export type ShopifyNavbarCollectionsOperation = {
+  data: {
+    collections: Connection<{
+      title: string;
+      handle: string;
+      products: Connection<ShopifyProduct>;
+    }>;
+  };
+  variables: {};
+};
+
 export type ShopifyCollectionsOperation = {
   data: {
     collections: Connection<ShopifyCollection>;
@@ -259,7 +270,15 @@ export type ShopifyUpdateCartOperation = {
   };
 };
 
-
 export type Cart = Omit<ShopifyCart, 'lines'> & {
   lines: CartItem[];
 };
+
+export type NavbarCollection = {
+  title: string;
+  handle: string;
+  products: {
+    title: string;
+    handle: string;
+  }[];
+}[];

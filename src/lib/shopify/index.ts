@@ -10,6 +10,7 @@ import {
   getCollectionProductsQuery,
   getCollectionQuery,
   getCollectionsQuery,
+  getNavbarCollectionsQuery,
 } from './queries/collection';
 import {
   getProductQuery,
@@ -22,6 +23,7 @@ import {
   Connection,
   Image,
   Menu,
+  NavbarCollection,
   Product,
   ShopifyAddToCartOperation,
   ShopifyCart,
@@ -32,6 +34,7 @@ import {
   ShopifyCollectionsOperation,
   ShopifyCreateCartOperation,
   ShopifyMenuOperation,
+  ShopifyNavbarCollectionsOperation,
   ShopifyProduct,
   ShopifyProductOperation,
   ShopifyProductRecommendationsOperation,
@@ -43,7 +46,12 @@ import { headers } from 'next/headers';
 import { revalidateTag } from 'next/cache';
 import { getMenuQuery } from './queries/menu';
 import { getCartQuery } from './queries/cart';
-import { addToCartMutation, createCartMutation, editCartItemsMutation, removeFromCartMutation } from './mutations/cart';
+import {
+  addToCartMutation,
+  createCartMutation,
+  editCartItemsMutation,
+  removeFromCartMutation,
+} from './mutations/cart';
 
 const domain = process.env.SHOPIFY_SHOP_DOMAIN
   ? ensureStartsWith(process.env.SHOPIFY_SHOP_DOMAIN, 'https://')
@@ -260,9 +268,7 @@ export async function getMenu(handle: string): Promise<Menu[]> {
   return (
     res.body?.data?.menu?.items.map((item: { title: string; url: string }) => ({
       title: item.title,
-      path: item.url
-        .replace(domain, '/')
-        .replace('/pages', '/')
+      path: item.url.replace(domain, '/').replace('/pages', '/'),
     })) || []
   );
 }
@@ -311,29 +317,29 @@ export async function getProducts({
       sortKey,
     },
   });
-  console.log('fetching')
+  console.log('fetching');
 
   return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
 }
 
 const reshapeCart = (cart: ShopifyCart): Cart => {
-  if(!cart.cost?.totalTaxAmount) {
+  if (!cart.cost?.totalTaxAmount) {
     cart.cost.totalTaxAmount = {
       amount: '0.0',
-      currencyCode: 'MAD'
-    }
+      currencyCode: 'MAD',
+    };
   }
 
   return {
     ...cart,
-    lines: removeEdgesAndNodes(cart.lines)
+    lines: removeEdgesAndNodes(cart.lines),
   };
-}
+};
 
 export async function createCart(): Promise<Cart> {
   const res = await shopifyFetch<ShopifyCreateCartOperation>({
     query: createCartMutation,
-    cache: 'no-store'
+    cache: 'no-store',
   });
 
   return reshapeCart(res.body.data.cartCreate.cart);
@@ -347,21 +353,24 @@ export async function addToCart(
     query: addToCartMutation,
     variables: {
       cartId,
-      lines
+      lines,
     },
-    cache: 'no-store'
+    cache: 'no-store',
   });
   return reshapeCart(res.body.data.cartLinesAdd.cart);
 }
 
-export async function removeFromCart(cartId: string, lineIds: string[]): Promise<Cart> {
+export async function removeFromCart(
+  cartId: string,
+  lineIds: string[]
+): Promise<Cart> {
   const res = await shopifyFetch<ShopifyRemoveFromCartOperation>({
     query: removeFromCartMutation,
     variables: {
       cartId,
-      lineIds
+      lineIds,
     },
-    cache: 'no-store'
+    cache: 'no-store',
   });
 
   return reshapeCart(res.body.data.cartLinesRemove.cart);
@@ -375,15 +384,17 @@ export async function updateCart(
     query: editCartItemsMutation,
     variables: {
       cartId,
-      lines
+      lines,
     },
-    cache: 'no-store'
+    cache: 'no-store',
   });
 
   return reshapeCart(res.body.data.cartLinesUpdate.cart);
 }
 
-export async function getCart(cartId: string | undefined): Promise<Cart | undefined> {
+export async function getCart(
+  cartId: string | undefined
+): Promise<Cart | undefined> {
   if (!cartId) {
     return undefined;
   }
@@ -391,7 +402,7 @@ export async function getCart(cartId: string | undefined): Promise<Cart | undefi
   const res = await shopifyFetch<ShopifyCartOperation>({
     query: getCartQuery,
     variables: { cartId },
-    tags: [TAGS.cart]
+    tags: [TAGS.cart],
   });
 
   // Old carts becomes `null` when you checkout.
@@ -402,6 +413,24 @@ export async function getCart(cartId: string | undefined): Promise<Cart | undefi
   return reshapeCart(res.body.data.cart);
 }
 
+export async function getNavbarCollections(): Promise<
+  NavbarCollection | undefined
+> {
+  const res = await shopifyFetch<ShopifyNavbarCollectionsOperation>({
+    query: getNavbarCollectionsQuery,
+    variables: {},
+    tags: [TAGS.collections, TAGS.products],
+  });
+
+  const shopifyCollections = removeEdgesAndNodes(res.body?.data?.collections);
+
+  return shopifyCollections
+    .filter((collection) => !collection.title.startsWith('NEXTJS-FRONTEND-'))
+    .map((collection) => ({
+      ...collection,
+      products: removeEdgesAndNodes(collection.products),
+    }));
+}
 
 // This is called from `app/api/revalidate.ts` so providers can control revalidation logic.
 export async function revalidate(req: NextRequest): Promise<NextResponse> {
