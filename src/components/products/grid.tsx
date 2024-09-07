@@ -1,5 +1,6 @@
 import { DrawerProvider } from './drawer-context';
 import { ProductDrawer } from './product-drawer';
+import { SortDrawer } from './sort/sort-drawer';
 
 export function ProductsGrid({ children }: { children: React.ReactNode }) {
   return (
@@ -8,6 +9,7 @@ export function ProductsGrid({ children }: { children: React.ReactNode }) {
         {children}
       </div>
       <ProductDrawer />
+      <SortDrawer />
     </DrawerProvider>
   );
 }

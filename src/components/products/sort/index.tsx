@@ -10,8 +10,12 @@ import {
 } from '@/components/ui/select';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { createUrl } from '@/lib/utils';
+import { Sliders } from 'react-feather';
+import { Button } from '@/components/ui/button';
+import useSortDrawer from '@/store/sort-drawer';
 
 export function SortDropdown() {
+  const { open } = useSortDrawer();
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -27,25 +31,35 @@ export function SortDropdown() {
   };
 
   return (
-    <Select onValueChange={onChange}>
-      <SelectTrigger className="ml-auto w-[180px]">
-        <SelectValue placeholder="Sort by" />
-      </SelectTrigger>
-      <SelectContent>
-        {sorting.map((item) => (
-          <SelectItem
-            key={item.slug || 'default'}
-            value={item.slug || 'default'}
-            disabled={
-              item.slug
-                ? searchParams.get('sort') === item.slug
-                : searchParams.get('sort') === 'default'
-            }
-          >
-            {item.title}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <>
+      <Select onValueChange={onChange}>
+        <SelectTrigger className="ml-auto hidden md:flex w-[200px] z-20">
+          <SelectValue placeholder="Sort by" />
+        </SelectTrigger>
+        <SelectContent className="z-20">
+          {sorting.map((item) => (
+            <SelectItem
+              key={item.slug || 'default'}
+              value={item.slug || 'default'}
+              disabled={
+                item.slug
+                  ? searchParams.get('sort') === item.slug
+                  : searchParams.get('sort') === 'default'
+              }
+            >
+              {item.title}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Button
+        variant="link"
+        className="md:hidden ml-auto gap-2 p-0 h-min"
+        onClick={open}
+      >
+        <Sliders width={16} height={16} />
+        Sort By
+      </Button>
+    </>
   );
 }
