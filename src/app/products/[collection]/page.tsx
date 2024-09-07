@@ -19,14 +19,23 @@ export default async function CollectionPage({
     sortKey,
     reverse,
   });
+  const resultsText = products.length > 1 ? 'Results' : 'Result';
 
   return (
     <>
-      <header className="mb-4 flex items-center">
-        <h1 className="text-lg">
-          {params.collection.replace('-', ' ').toUpperCase()} Collection
+      <header className="mb-4 md:mb-6 flex md:items-center flex-col md:flex-row px-4 md:px-0">
+        <h1 className="text-lg font-medium uppercase">
+          {params.collection.replace('-', ' ').toUpperCase()} Collection{' '}
+          <span className="md:inline hidden">
+            ({products.length} {resultsText})
+          </span>
         </h1>
-        <SortDropdown />
+        <div className="flex items-center mt-4 md:mt-0 md:ml-auto">
+          <p className="text-base text-primary-foreground/60 md:hidden">
+            {products.length} {resultsText}
+          </p>
+          <SortDropdown />
+        </div>
       </header>
       {products.length > 0 ? (
         <ProductsGrid>

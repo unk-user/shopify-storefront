@@ -14,20 +14,24 @@ export default async function ProductsPage({
     sorting.find((item) => item.slug === sort) || defaultSort;
 
   const products = await getProducts({ sortKey, reverse, query: searchValue });
-  const resultsText = products.length > 1 ? 'results' : 'result';
+  const resultsText = products.length > 1 ? 'Results' : 'Result';
 
   return (
     <>
-      <header className="mb-4 flex items-center">
-        {searchValue ? (
-          <h1 className="text-lg">
-            {products.length === 0
-              ? 'There are no products that match'
-              : `Showing ${products.length} ${resultsText} for `}
-            <span className="font-medium">&quot;{searchValue}&quot;</span>
-          </h1>
-        ) : null}
-        <SortDropdown />
+      <header className="mb-4 md:mb-6 flex md:items-center flex-col md:flex-row px-4 md:px-0">
+        <h1 className="text-lg font-medium uppercase">
+          {searchValue ? `Search results for "${searchValue}"` : `All Products`}
+          <span className="md:inline hidden">
+            {' '}
+            ({products.length} {resultsText})
+          </span>
+        </h1>
+        <div className="flex items-center mt-4 md:mt-0 md:ml-auto">
+          <p className="text-base text-primary-foreground/60 md:hidden">
+            {products.length} {resultsText}
+          </p>
+          <SortDropdown />
+        </div>
       </header>
       {products.length > 0 ? (
         <ProductsGrid>
@@ -35,7 +39,7 @@ export default async function ProductsPage({
             <ProductCard
               product={product}
               key={product.id}
-              priority={index < 3}
+              priority={index < 4}
             />
           ))}
         </ProductsGrid>
