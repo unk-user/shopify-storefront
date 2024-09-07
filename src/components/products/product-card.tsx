@@ -1,46 +1,33 @@
 //TODO: IMPLEMENT ADD TO CART BUTTON
-
 'use client';
-import { Button } from '@/components/ui/button';
-import { Product, ProductOption } from '@/lib/shopify/types';
+import { Product, ProductVariant } from '@/lib/shopify/types';
 import { cn, formatPrice } from '@/lib/utils';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useCallback, useMemo, useState } from 'react';
 import { useDrawer } from './drawer-context';
-import { ProductState, findSelectedVariant } from '@/lib/productUtils';
+import { useEffect, useState } from 'react';
+import { DrawerButton } from './drawer-button';
+import { motion, Variants } from 'framer-motion';
 
-const OptionValues = ({
-  option,
-  selectedValue,
-  setValue,
-}: {
-  option: ProductOption;
-  selectedValue: string | null;
-  setValue: (value: string) => void;
-}) => {
-  return (
-    <div className="flex items-center flex-wrap gap-[2px]">
-      {option.values.map((value) => (
-        <Button
-          key={value}
-          onClick={(e) => {
-            e.stopPropagation();
-            setValue(value);
-          }}
-          type="button"
-          size="sm"
-          className={cn([
-            'p-0 bg-black/90 rounded-none text-xs',
-            selectedValue === value && 'bg-blue-950',
-          ])}
-        >
-          {value}
-        </Button>
-      ))}
-    </div>
-  );
+import Link from 'next/link';
+import Image from 'next/image';
+import { useMediaQuery } from 'react-responsive';
+
+const labelVariants: Variants = {
+  shown: {
+    y: 0,
+    display: 'block',
+    transition: {
+      ease: 'easeOut',
+      duration: 0.3,
+      type: 'tween',
+    },
+  },
+  hidden: {
+    y: -24,
+    display: 'none',
+    transition: {
+      duration: 0,
+    },
+  },
 };
 
 export function ProductCard({
@@ -50,88 +37,111 @@ export function ProductCard({
   product: Product;
   priority: boolean;
 }) {
-  const router = useRouter();
-  const [productState, setProductState] = useState<ProductState>({});
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const isDesktop = useMediaQuery({ query: '(min-width: 768px)' });
+  const [hovered, setHovered] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(
+    product.variants[0]
+  );
   const { openDrawer } = useDrawer();
-
-  const selectedVariant = useMemo(() => {
-    return findSelectedVariant(product, productState);
-  }, [product, productState]);
-
   const productLink = `/product/${product.handle}`;
 
-  const handleCardClick = useCallback(() => {
-    router.push(productLink);
-  }, [router, productLink]);
+  const handleClick = () => {
+    openDrawer(product);
+  };
+  const currencyCode = product.priceRange.minVariantPrice.currencyCode;
 
-  const formattedPrice = formatPrice(
-    product.priceRange.minVariantPrice.amount,
-    product.priceRange.minVariantPrice.currencyCode
-  );
-
-  const hasNoVariantAvailable = useMemo(() => {
-    return product.variants.every((variant) => !variant.availableForSale);
-  }, [product.variants]);
+  useEffect(() => {
+    const touchDevice =
+      'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    setIsTouchDevice(touchDevice);
+    if (touchDevice) setHovered(false);
+  }, [isDesktop]);
 
   return (
-    <article className="h-full flex flex-col hover:cursor-pointer">
-      <Link href={productLink}>
-        <figure className="w-full aspect-square relative">
-          <Image
-            src={product.featuredImage.url}
-            alt={product.featuredImage.altText || 'product image'}
-            className={cn([
-              'h-full w-full object-contain',
-              !selectedVariant ? 'opacity-100' : 'opacity-0',
-            ])}
-            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
-            loading={priority ? 'eager' : 'lazy'}
-            priority={priority}
-            fill
-          />
-          {product.variants.map((variant) => {
-            return (
-              <Image
-                key={variant.id}
-                src={variant.image?.url}
-                alt={product.featuredImage.altText || 'product image'}
-                className={cn([
-                  'h-full w-full object-contain',
-                  variant.id === selectedVariant?.id
-                    ? 'opacity-100'
-                    : 'opacity-0',
-                ])}
-                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
-                loading={priority ? 'eager' : 'lazy'}
-                priority={priority}
-                fill
-              />
-            );
-          })}
-        </figure>
-      </Link>
-      <Link href={productLink} className="flex flex-col flex-1 basis-auto p-1">
-        <h2 className="text-base font-medium mb-2">{product.title}</h2>
-        <p className="text-base mt-auto">
-          From <span className="font-bold">{formattedPrice}</span>
-        </p>
-      </Link>
-      <div className="space-y-1" onClick={handleCardClick}>
-        {product.options.map((option) => (
-          <OptionValues
-            key={option.name}
-            option={option}
-            selectedValue={productState && productState[option.name]}
-            setValue={(value: string) =>
-              setProductState((prev) => ({
-                ...prev,
-                [option.name.toLowerCase()]: value,
-              }))
-            }
-          />
-        ))}
-      </div>
-      <Button onClick={() => openDrawer(product)}>Choose Options</Button>
-    </article>
+    <div
+      className="w-full"
+      onMouseEnter={() => !isTouchDevice && setHovered(true)}
+      onMouseLeave={() => !isTouchDevice && setHovered(false)}
+    >
+      <figure className="h-full">
+        <Link href={productLink} className="h-full flex flex-col">
+          <div className="w-full aspect-square relative">
+            <Image
+              src={selectedVariant.image.url}
+              alt={product.title}
+              className="object-contain"
+              priority={priority}
+              loading={priority ? 'eager' : 'lazy'}
+              sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+              fill
+            />
+          </div>
+          <div className="w-full flex-1 flex flex-col">
+            <div
+              className={cn([
+                'w-full flex-wrap items-center gap-1 mt-1 z-10',
+                product.variants.length && hovered ? 'flex' : 'hidden',
+              ])}
+            >
+              {Array(7)
+                .fill(0)
+                .map(
+                  (_, index) =>
+                    product.variants[index] && (
+                      <div
+                        key={product.variants[index].id}
+                        onMouseEnter={() =>
+                          setSelectedVariant(product.variants[index])
+                        }
+                        className="w-8 h-8 relative"
+                      >
+                        <Image
+                          src={product.variants[index].image.url}
+                          alt={product.title}
+                          className="object-contain"
+                          loading="lazy"
+                          fill
+                          sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+                        />
+                      </div>
+                    )
+                )}
+              <p className="text-xs text-primary-foreground/60">
+                {product.variants.length > 7 &&
+                  '+' + (product.variants.length - 7)}
+              </p>
+            </div>
+            <motion.div
+              animate={hovered ? 'shown' : 'hidden'}
+              variants={labelVariants}
+              className={
+                product.variants.length && hovered ? 'block' : 'hidden'
+              }
+            >
+              <p className="text-xs md:text-sm xl:text-base w-full mt-1 font-bold">
+                {formatPrice(selectedVariant.price.amount, currencyCode)}
+              </p>
+            </motion.div>
+            <div
+              className={cn([
+                'w-full flex flex-col space-y-1 pt-1 md:pt-2 pb-3 text-xs md:text-sm xl:text-base',
+                product.variants.length && hovered ? 'hidden' : '',
+              ])}
+            >
+              <p className="font-semibold">{product.title}</p>
+              <p className='font-bold'>
+                <span className="text-storefront-accent">From</span>{' '}
+                {formatPrice(
+                  product.priceRange.minVariantPrice.amount,
+                  currencyCode
+                )}
+              </p>
+            </div>
+            <DrawerButton handleClick={handleClick} />
+          </div>
+        </Link>
+      </figure>
+    </div>
   );
 }
