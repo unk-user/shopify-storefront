@@ -117,15 +117,16 @@ export function MobileNavmenu({
               href="/products"
               onClick={handleOpen}
             />
-            <ul className="-space-y-1">
+            <ul className="space-y-2">
               {collections.map((collection) => (
-                <li key={collection.handle}>
-                  <ListLink
-                    label={collection.title}
+                <li key={collection.handle} className="pl-2 font-medium">
+                  <Link
                     href={`/products/${collection.handle}`}
-                    className="font-normal text-base"
+                    className="hover:underline"
                     onClick={handleOpen}
-                  />
+                  >
+                    {collection.title}
+                  </Link>
                 </li>
               ))}
             </ul>

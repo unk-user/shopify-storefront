@@ -42,7 +42,7 @@ export function CollectionMenu({
       <nav
         aria-label="Navbar Submenu"
         className={cn([
-          'absolute top-[60px] left-0 right-0 bg-background group-data-[sticky]/header:bg-secondary transition-all duration-200 overflow-hidden px-20',
+          'absolute top-[60px] left-0 right-0 bg-background group-data-[sticky]/header:bg-secondary transition-all duration-200 overflow-hidden px-8 xl:px-20',
           isOpen ? 'h-auto' : 'h-0 invisible *:hidden',
         ])}
       >
@@ -50,7 +50,7 @@ export function CollectionMenu({
           initial="closed"
           animate={isOpen ? 'open' : 'closed'}
           variants={{ open: { transition: { staggerChildren: 0.1 } } }}
-          className="h-full w-full pb-8 grid grid-cols-5 gap-12 max-w-screen-2xl mx-auto"
+          className="h-full w-full pb-8 grid grid-cols-3 xl:grid-cols-5 gap-4 xl:gap-12 max-w-screen-2xl mx-auto"
         >
           {collections.map((collection) => (
             <motion.div
