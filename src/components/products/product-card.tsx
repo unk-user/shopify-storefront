@@ -3,27 +3,25 @@
 import { Product, ProductVariant } from '@/lib/shopify/types';
 import { cn, formatPrice } from '@/lib/utils';
 import { useDrawer } from './drawer-context';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DrawerButton } from './drawer-button';
 import { motion, Variants } from 'framer-motion';
+import { useMediaQuery } from 'react-responsive';
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useMediaQuery } from 'react-responsive';
 
 const labelVariants: Variants = {
   shown: {
     y: 0,
-    display: 'block',
     transition: {
       ease: 'easeOut',
-      duration: 0.3,
+      duration: 0.2,
       type: 'tween',
     },
   },
   hidden: {
     y: -24,
-    display: 'none',
     transition: {
       duration: 0,
     },
@@ -37,35 +35,46 @@ export function ProductCard({
   product: Product;
   priority: boolean;
 }) {
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const PRODUCT_LINK = `/product/${product.handle}`;
+
   const isDesktop = useMediaQuery({ query: '(min-width: 768px)' });
+  const { openDrawer } = useDrawer();
+
   const [hovered, setHovered] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(
     product.variants[0]
   );
-  const { openDrawer } = useDrawer();
-  const productLink = `/product/${product.handle}`;
 
-  const handleClick = () => {
+  const variantPrice = useMemo(
+    () =>
+      formatPrice(
+        selectedVariant.price.amount,
+        selectedVariant.price.currencyCode
+      ),
+    [selectedVariant]
+  );
+
+  const minPrice = useMemo(
+    () =>
+      formatPrice(
+        product.priceRange.minVariantPrice.amount,
+        product.priceRange.minVariantPrice.currencyCode
+      ),
+    [product]
+  );
+
+  const handleOpenDrawer = useCallback(() => {
     openDrawer(product);
-  };
-  const currencyCode = product.priceRange.minVariantPrice.currencyCode;
-
-  useEffect(() => {
-    const touchDevice =
-      'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    setIsTouchDevice(touchDevice);
-    if (touchDevice) setHovered(false);
-  }, [isDesktop]);
+  }, [product, openDrawer]);
 
   return (
     <div
-      className="w-full"
-      onMouseEnter={() => !isTouchDevice && setHovered(true)}
-      onMouseLeave={() => !isTouchDevice && setHovered(false)}
+      className="w-full group"
+      onMouseEnter={() => isDesktop && setHovered(true)}
+      onMouseLeave={() => isDesktop && setHovered(false)}
     >
       <figure className="h-full">
-        <Link href={productLink} className="h-full flex flex-col">
+        <Link href={PRODUCT_LINK} className="h-full flex flex-col">
           <div className="w-full aspect-square relative">
             <Image
               src={selectedVariant.image.url}
@@ -80,8 +89,8 @@ export function ProductCard({
           <div className="w-full flex-1 flex flex-col">
             <div
               className={cn([
-                'w-full flex-wrap items-center gap-1 mt-1 z-10',
-                product.variants.length && hovered ? 'flex' : 'hidden',
+                'w-full flex-wrap items-center gap-1 mt-1 z-10 hidden',
+                product.variants.length && 'md:group-hover:flex',
               ])}
             >
               {Array(7)
@@ -113,32 +122,26 @@ export function ProductCard({
               </p>
             </div>
             <motion.div
-              animate={hovered ? 'shown' : 'hidden'}
               variants={labelVariants}
-              className={
-                product.variants.length && hovered ? 'block' : 'hidden'
-              }
+              animate={hovered ? 'shown' : 'hidden'}
+              className="hidden md:group-hover:block"
             >
               <p className="text-xs md:text-sm xl:text-base w-full mt-1 font-bold">
-                {formatPrice(selectedVariant.price.amount, currencyCode)}
+                {variantPrice}
               </p>
             </motion.div>
             <div
-              className={cn([
+              className={cn(
                 'w-full flex flex-col space-y-1 pt-1 md:pt-2 pb-3 text-xs md:text-sm xl:text-base',
-                product.variants.length && hovered ? 'hidden' : '',
-              ])}
+                product.variants.length && 'md:group-hover:hidden'
+              )}
             >
               <p className="font-semibold">{product.title}</p>
-              <p className='font-bold'>
-                <span className="text-storefront-accent">From</span>{' '}
-                {formatPrice(
-                  product.priceRange.minVariantPrice.amount,
-                  currencyCode
-                )}
+              <p className="font-bold">
+                <span className="text-storefront-accent">From</span> {minPrice}
               </p>
             </div>
-            <DrawerButton handleClick={handleClick} />
+            <DrawerButton handleClick={handleOpenDrawer} />
           </div>
         </Link>
       </figure>
