@@ -13,6 +13,7 @@ import { useProduct } from './product-context';
 import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { findSelectedVariant } from '@/lib/productUtils';
+import { ZoomableImage } from './zoomable-image';
 
 //TODO: IMPROVE STYLING
 
@@ -45,56 +46,60 @@ export function ProductCarousel({ product }: { product: Product }) {
       );
       if (variantIndex !== -1) api.scrollTo(variantIndex);
     }
-  }, [state, product.variants, product.images, api]);
+  }, [state, product, api]);
 
   return (
-    <div className="flex flex-col gap-2 w-full h-full">
-      <Carousel
-        className="w-full h-full bg-white"
-        setApi={setApi}
-        opts={{ loop: true }}
-      >
-        <CarouselContent className="w-full h-full">
-          {product.images.map((image) => (
+    <div className="flex flex-col gap-4 xl:w-1/3 md:w-[45%]">
+      <Carousel setApi={setApi} opts={{ loop: false }}>
+        <CarouselContent className="h-full aspect-square gap-4">
+          {product.images.map((image, index) => (
             <CarouselItem key={image.url}>
-              <div className="relative h-full w-full">
-                <Image
+              <div className="relative w-full aspect-square">
+                <ZoomableImage
                   src={image.url}
                   alt={image.altText || 'Product Image'}
-                  sizes="50vw"
-                  className="object-contain"
-                  loading="lazy"
-                  fill
+                  priority={index === 1}
+                  loading={index === 1 ? 'eager' : 'lazy'}
                 />
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
       </Carousel>
-      <div className="flex items-center gap-1">
-        {product.images.map((image, index) => (
-          <div
-            className={cn([
-              'relative border-4 hover:cursor-pointer',
-              selectedIndex === index ? 'border-b-yellow-500' : '',
-            ])}
-            onClick={() => api?.scrollTo(index)}
-            aria-label={`View image ${index + 1}`}
-            key={image.url}
-          >
-            <Image
-              src={image.url}
-              alt={image.altText || 'Product Image'}
-              width={50}
-              height={50}
-              loading="lazy"
-              className="object-contain"
-            />
-          </div>
-        ))}
-      </div>
+      <Carousel
+        className="md:block hidden"
+        opts={{ slidesToScroll: 5, loop: false }}
+      >
+        <CarouselContent className="lg:-ml-2 -ml-1">
+          {product.images.map((image, index) => (
+            <CarouselItem
+              key={image.url}
+              className="lg:basis-auto basis-[20%] lg:pl-2 pl-1"
+            >
+              <div
+                className="relative rounded-sm overflow-hidden hover:cursor-pointer"
+                onClick={() => api?.scrollTo(index)}
+              >
+                <div
+                  className={cn('absolute inset-0 bg-black/50 invisible', {
+                    visible: selectedIndex === index,
+                  })}
+                ></div>
+                <Image
+                  src={image.url}
+                  alt={image.altText || 'Product Image'}
+                  className="object-contain"
+                  width={80}
+                  height={80}
+                  loading="lazy"
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselNext className="xl:-right-10 -right-4" />
+        <CarouselPrevious className="xl:-left-10 -left-4" />
+      </Carousel>
     </div>
   );
 }
