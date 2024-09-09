@@ -5,5 +5,9 @@ export default function ProductLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ProductProvider>{children}</ProductProvider>;
+  return (
+    <ProductProvider>
+      <div className="pt-8 pb-24 max-w-screen-2xl mx-auto">{children}</div>
+    </ProductProvider>
+  );
 }

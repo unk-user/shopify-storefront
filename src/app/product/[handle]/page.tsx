@@ -1,5 +1,3 @@
-import { AddToCart } from '@/components/cart/add-to-cart';
-import { ProductOptions } from '@/components/product/options';
 import { ProductCarousel } from '@/components/product/product-carousel';
 import { getProduct } from '@/lib/shopify';
 
@@ -18,19 +16,17 @@ export default async function ProductPage({
 
   if (product)
     return (
-      <section className="w-full flex">
-        <div className="w-[800px] aspect-square bg-gray-800 flex items-center justify-center py-24 px-28">
+      <>
+        <section className="flex flex-col md:flex-row">
           <ProductCarousel product={product} />
-        </div>
-        <div className="flex-1 flex flex-col px-12 py-24">
-          <h1 className="text-xl leading-8 font-bold text-black/85">
-            {product?.title}
-          </h1>
-          <p className="mt-2 text-sm">SKU: {product?.variants[0].sku}</p>
-          <p className="mt-4 text-2xl font-bold">{formattedPrice}</p>
-          <ProductOptions product={product} />
-          <AddToCart product={product} />
-        </div>
-      </section>
+          <div className="flex-1 flex flex-col px-4 md:pl-4 lg:pl-8 xl:pl-16">
+            <h1 className="text-2xl font-bold">
+              {product?.title}
+            </h1>
+            <p className="mt-2 text-sm text-storefront-primary-300">SKU: {product?.variants[0].sku}</p>
+            <p className="mt-4 text-2xl font-bold text-storefront-accent-400">{formattedPrice}</p>
+          </div>
+        </section>
+      </>
     );
 }

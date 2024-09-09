@@ -31,7 +31,7 @@ export default async function CollectionPage({
           </span>
         </h1>
         <div className="flex items-center mt-4 md:mt-0 md:ml-auto">
-          <p className="text-base text-primary-foreground/60 md:hidden">
+          <p className="text-base text-storefront-primary-300 md:hidden">
             {products.length} {resultsText}
           </p>
           <SortDropdown />
