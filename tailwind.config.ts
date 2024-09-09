@@ -21,12 +21,12 @@ const config = {
       xs: ['0.8rem', { lineHeight: '1.375' }],
       sm: ['0.9rem', { lineHeight: '1.375' }],
       base: ['1rem', { lineHeight: '1.375' }],
-      lg: ['1.25rem', { lineHeight: '1.125' }],
-      xl: ['1.563rem', { lineHeight: '1' }],
-      '2xl': ['1.953rem', { lineHeight: '1' }],
-      '3xl': ['2.441rem', { lineHeight: '1' }],
-      '4xl': ['3.052rem', { lineHeight: '1' }],
-      '5xl': ['3.815rem', { lineHeight: '1' }],
+      lg: ['1.25rem', { lineHeight: '1.25' }],
+      xl: ['1.563rem', { lineHeight: '1.15' }],
+      '2xl': ['1.953rem', { lineHeight: '1.15' }],
+      '3xl': ['2.441rem', { lineHeight: '1.125' }],
+      '4xl': ['3.052rem', { lineHeight: '1.125' }],
+      '5xl': ['3.815rem', { lineHeight: '1.125' }],
     },
     extend: {
       fontFamily: {
@@ -68,10 +68,36 @@ const config = {
         },
         storefront: {
           background: '#1F1F1F',
-          text: '#FFFFFF',
-          primary: '#4C4C4C',
+          text: '#F8F8FF',
+          primary: {
+            DEFAULT: '#4c4c4c',
+            '50': '#f6f6f6',
+            '100': '#e7e7e7',
+            '200': '#d1d1d1',
+            '300': '#b0b0b0',
+            '400': '#888888',
+            '500': '#6d6d6d',
+            '600': '#5d5d5d',
+            '700': '#4c4c4c',
+            '800': '#454545',
+            '900': '#3d3d3d',
+            '950': '#262626',
+          },
           secondary: '#353535',
-          accent: '#E85C21',
+          accent: {
+            DEFAULT: '#e85c21',
+            '50': '#fef5ee',
+            '100': '#fce9d8',
+            '200': '#f8cfb0',
+            '300': '#f3ad7e',
+            '400': '#ed814a',
+            '500': '#e85c21',
+            '600': '#da471c',
+            '700': '#b53519',
+            '800': '#902c1c',
+            '900': '#74271a',
+            '950': '#3f100b',
+          },
         },
       },
       borderRadius: {
@@ -81,15 +107,25 @@ const config = {
       },
       keyframes: {
         'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
         },
         'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
         },
         marquee: {
-          to: { transform: 'translateX(-50%)' },
+          to: {
+            transform: 'translateX(-50%)',
+          },
         },
       },
       animation: {
