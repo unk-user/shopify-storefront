@@ -1,20 +1,19 @@
 'use client';
+
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
 import { Product } from '@/lib/shopify/types';
 import { type CarouselApi } from '@/components/ui/carousel';
 import { useProduct } from './product-context';
 import { useCallback, useEffect, useState } from 'react';
-import Image from 'next/image';
 import { findSelectedVariant } from '@/lib/productUtils';
 import { ZoomableImage } from './zoomable-image';
 
+import Image from 'next/image';
 //TODO: IMPROVE STYLING
 
 export function ProductCarousel({ product }: { product: Product }) {
@@ -49,7 +48,7 @@ export function ProductCarousel({ product }: { product: Product }) {
   }, [state, product, api]);
 
   return (
-    <div className="flex flex-col gap-4 xl:w-1/3 md:w-[45%]">
+    <div className="flex flex-col gap-4 md:w-[45%]">
       <Carousel setApi={setApi} opts={{ loop: false }}>
         <CarouselContent className="h-full aspect-square gap-4">
           {product.images.map((image, index) => (
@@ -65,6 +64,9 @@ export function ProductCarousel({ product }: { product: Product }) {
             </CarouselItem>
           ))}
         </CarouselContent>
+        <div className="absolute text-sm font-medium bottom-1 right-2 text-storefront-primary-900">
+          {selectedIndex + 1} / {product.images.length}
+        </div>
       </Carousel>
       <Carousel
         className="md:block hidden"
@@ -97,8 +99,6 @@ export function ProductCarousel({ product }: { product: Product }) {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselNext className="xl:-right-10 -right-4" />
-        <CarouselPrevious className="xl:-left-10 -left-4" />
       </Carousel>
     </div>
   );

@@ -49,7 +49,7 @@ export function ZoomableImage({
         src={src}
         alt={alt}
         className="object-contain md:rounded-md md:cursor-zoom-in"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        sizes="(max-width: 768px) 100vw, 45vw"
         priority={priority}
         loading={loading}
         fill
