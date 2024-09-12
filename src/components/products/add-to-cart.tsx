@@ -54,7 +54,7 @@ export function AddToCart({
   return (
     <form
       action={async () => {
-        addCartItem(finalVariant, product);
+        addCartItem(finalVariant, product, variant?.quantityAvailable || 0);
         actionWithVariant();
       }}
     >

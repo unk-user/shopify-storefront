@@ -41,12 +41,10 @@ export async function addItem(
       { merchandiseId: selectedVariantId, quantity },
     ]);
 
-    return userErrors && userErrors.length > 0
-      ? { status: 'error', message: "you've reached the limit of this item, maximum quantity was added" }
-      : {
-          status: 'success',
-          message: 'item added to cart',
-        };
+    return {
+      status: 'success',
+      message: 'Cart action confirmed',
+    };
   } catch (e) {
     console.log(e);
     return { status: 'error', message: 'Error adding item to cart' };
