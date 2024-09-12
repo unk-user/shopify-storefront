@@ -6,6 +6,10 @@ export const addToCartMutation = /* GraphQL */ `
       cart {
         ...cart
       }
+      userErrors {
+        code
+        message
+      }
     }
   }
   ${cartFragment}
