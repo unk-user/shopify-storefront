@@ -11,28 +11,37 @@ import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+interface ActionResponse {
+  status: 'success' | 'error';
+  message: string;
+}
+
 export async function createCartAndSetCookie() {
   let cart = await createCart();
   cookies().set('cartId', cart.id!);
+  return cart.id;
 }
 
 export async function addItem(
   prevState: any,
   selectedVariantId: string | undefined
-) {
-  let cartId = cookies().get('cartId')?.value;
+): Promise<ActionResponse> {
+  let cartId =
+    cookies().get('cartId')?.value || (await createCartAndSetCookie());
 
-  if (!cartId || !selectedVariantId) {
-    return 'Error adding item to cart';
-  }
+  if (!cartId) return { status: 'error', message: 'Cart ID not found' };
+  if (!selectedVariantId)
+    return { status: 'error', message: 'Variant not selected' };
 
   try {
     await addToCart(cartId, [
       { merchandiseId: selectedVariantId, quantity: 1 },
     ]);
-    revalidateTag(TAGS.cart);
+    return { status: 'success', message: 'Item added to cart' };
   } catch (e) {
-    return 'Error adding item to cart';
+    return { status: 'error', message: 'Error adding item to cart' };
+  } finally {
+    revalidateTag(TAGS.cart);
   }
 }
 
@@ -61,6 +70,7 @@ export async function removeItem(prevState: any, merchandiseId: string) {
       return 'Item not found in cart';
     }
   } catch (e) {
+    revalidateTag(TAGS.cart);
     return 'Error removing item from cart';
   }
 }
@@ -107,11 +117,10 @@ export async function updateItemQuantity(
       // If the item doesn't exist in the cart and quantity > 0, add it
       await addToCart(cartId, [{ merchandiseId, quantity }]);
     }
-
-    revalidateTag(TAGS.cart);
   } catch (e) {
-    console.error(e);
     return 'Error updating item quantity';
+  } finally {
+    revalidateTag(TAGS.cart);
   }
 }
 

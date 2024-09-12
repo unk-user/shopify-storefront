@@ -6,6 +6,7 @@ import { Navbar } from '@/components/layout/navbar';
 import { cookies } from 'next/headers';
 import { getCart } from '@/lib/shopify';
 import { CartProvider } from '@/components/cart/cart-context';
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -36,6 +37,7 @@ export default async function RootLayout({
           <Navbar />
           <main className="px-0 md:px-8 xl:px-20 h-full">{children}</main>
         </CartProvider>
+        <Toaster position="top-center" richColors/>
       </body>
     </html>
   );
