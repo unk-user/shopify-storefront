@@ -39,7 +39,7 @@ const SubmitButton = ({
       disabled={pending}
       className="flex-grow bg-gradient-to-r from-primary to-storefront-primary-400 h-12 text-base font-semibold"
     >
-      {pending ? <Loader className='animate-spin'/> : 'Add to cart'}
+      {pending ? <Loader className="animate-spin" /> : 'Add to cart'}
     </Button>
   );
 };

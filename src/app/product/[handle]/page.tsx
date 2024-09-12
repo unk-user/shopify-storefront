@@ -3,7 +3,7 @@ import { ProductOptions } from '@/components/product/options';
 import { ProductCarousel } from '@/components/product/product-carousel';
 import { getProduct } from '@/lib/shopify';
 
-//TODO: MAKE RESPONSIVE & REFACTOR TO SMALL COMPONENTS
+//TODO: REFACTOR TO SMALL COMPONENTS
 
 export default async function ProductPage({
   params,

@@ -37,7 +37,7 @@ export default async function RootLayout({
           <Navbar />
           <main className="px-0 md:px-8 xl:px-20 h-full">{children}</main>
         </CartProvider>
-        <Toaster position="top-center" richColors/>
+        <Toaster position="top-center" theme='light' toastOptions={{ className: 'mt-14 md:mt-8' }} richColors/>
       </body>
     </html>
   );
