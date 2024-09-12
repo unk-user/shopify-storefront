@@ -18,7 +18,7 @@ export async function NavMenu() {
         <ListItem href="/about" label="About" />
       </ul>
       <div className="md:hidden">
-        <MobileNavmenu collections={collections}/>
+        <MobileNavmenu collections={collections} />
       </div>
     </nav>
   );
@@ -27,7 +27,11 @@ export async function NavMenu() {
 const ListItem = ({ href, label }: { href: string; label: string }) => {
   return (
     <li>
-      <Button variant="secondary" className="uppercase" asChild>
+      <Button
+        variant="secondary"
+        className="uppercase hover:underline"
+        asChild
+      >
         <Link href={href}>{label}</Link>
       </Button>
     </li>

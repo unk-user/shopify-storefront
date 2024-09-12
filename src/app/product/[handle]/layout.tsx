@@ -7,7 +7,7 @@ export default function ProductLayout({
 }) {
   return (
     <ProductProvider>
-      <div className="pt-8 pb-24 max-w-screen-2xl mx-auto">{children}</div>
+      <div className="pt-4 md:pt-8 pb-24 max-w-screen-2xl mx-auto">{children}</div>
     </ProductProvider>
   );
 }

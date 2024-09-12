@@ -62,7 +62,11 @@ export function MobileNavmenu({
   return (
     <Sheet open={open} onOpenChange={handleOpen}>
       <div className="h-full py-2">
-        <Button size="icon" variant="icon" asChild>
+        <Button
+          size="icon"
+          variant="icon"
+          asChild
+        >
           <SheetTrigger className="flex items-center">
             <Menu
               height={24}

@@ -30,7 +30,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: 'var(--font-sans)',
+        poppins: 'var(--font-poppins)',
       },
       colors: {
         border: 'hsl(var(--border))',

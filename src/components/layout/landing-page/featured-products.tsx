@@ -1,9 +1,9 @@
-import { getCollectionProduct } from '@/lib/shopify';
+import { getCollectionProducts } from '@/lib/shopify';
 import Image from 'next/image';
 
 //TODO: lift props to top level
 export async function FeaturedProducts() {
-  const products = await getCollectionProduct({ collection: 'featured' });
+  const products = await getCollectionProducts({ collection: 'featured' });
 
   return (
     <section className="grid grid-rows-1 grid-cols-5 h-[300px] w-screen px-16 overflow-x-scroll my-56">

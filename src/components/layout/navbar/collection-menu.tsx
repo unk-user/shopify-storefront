@@ -34,7 +34,7 @@ export function CollectionMenu({
     >
       <Button
         variant="secondary"
-        className="uppercase inline-flex items-center"
+        className="uppercase inline-flex items-center hover:underline"
         asChild
       >
         <Link href="/">Collections</Link>
