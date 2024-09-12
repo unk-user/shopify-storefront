@@ -6,8 +6,9 @@ import { useCart } from './cart-context';
 import { useProduct } from '../product/product-context';
 import { useFormState, useFormStatus } from 'react-dom';
 import { addItem } from './actions';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { QuantityInput } from './quantity-input';
 
 const SubmitButton = ({
   availableForSale = true,
@@ -23,7 +24,7 @@ const SubmitButton = ({
       <Button
         type="submit"
         disabled
-        className="w-full h-12 text-base font-semibold"
+        className="flex-1 h-12 text-base font-semibold"
       >
         {availableForSale ? 'Select Options' : 'Out of Stock'}
       </Button>
@@ -35,7 +36,7 @@ const SubmitButton = ({
       type="submit"
       aria-label="Add to cart"
       disabled={pending}
-      className="w-full bg-gradient-to-r from-primary to-storefront-primary-400 h-12 text-base font-semibold"
+      className="flex-1 bg-gradient-to-r from-primary to-storefront-primary-400 h-12 text-base font-semibold"
     >
       Add to Cart
     </Button>
@@ -47,6 +48,7 @@ export function AddToCart({ product }: { product: Product }) {
   const { addCartItem } = useCart();
   const { state } = useProduct();
   const [data, formAction] = useFormState(addItem, null);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     if (data) {
@@ -63,7 +65,10 @@ export function AddToCart({ product }: { product: Product }) {
   );
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
   const selectedVariantId = variant?.id || defaultVariantId;
-  const actionWithVariant = formAction.bind(null, selectedVariantId);
+  const actionWithVariant = formAction.bind(null, {
+    selectedVariantId,
+    quantity,
+  });
   const finalVariant = variants.find(
     (variant) => variant.id === selectedVariantId
   )!;
@@ -71,10 +76,12 @@ export function AddToCart({ product }: { product: Product }) {
   return (
     <form
       action={async () => {
-        addCartItem(finalVariant, product);
+        addCartItem(finalVariant, product, quantity);
         actionWithVariant();
       }}
+      className="flex items-center gap-2"
     >
+      <QuantityInput quantity={quantity} setQuantity={setQuantity} />
       <SubmitButton
         availableForSale={availableForSale}
         selectedVariantId={selectedVariantId}

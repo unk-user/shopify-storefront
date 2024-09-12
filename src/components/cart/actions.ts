@@ -24,7 +24,10 @@ export async function createCartAndSetCookie() {
 
 export async function addItem(
   prevState: any,
-  selectedVariantId: string | undefined
+  {
+    selectedVariantId,
+    quantity = 1,
+  }: { selectedVariantId?: string; quantity?: number }
 ): Promise<ActionResponse> {
   let cartId =
     cookies().get('cartId')?.value || (await createCartAndSetCookie());
@@ -34,9 +37,7 @@ export async function addItem(
     return { status: 'error', message: 'Variant not selected' };
 
   try {
-    await addToCart(cartId, [
-      { merchandiseId: selectedVariantId, quantity: 1 },
-    ]);
+    await addToCart(cartId, [{ merchandiseId: selectedVariantId, quantity }]);
     return { status: 'success', message: 'Item added to cart' };
   } catch (e) {
     return { status: 'error', message: 'Error adding item to cart' };
