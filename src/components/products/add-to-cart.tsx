@@ -25,10 +25,16 @@ const SubmitButton = ({
   return <Button aria-label="Add to cart">Add to Cart</Button>;
 };
 
-export function AddToCart({ product, state }: { product: Product, state: ProductState }) {
+export function AddToCart({
+  product,
+  state,
+}: {
+  product: Product;
+  state: ProductState;
+}) {
   const { variants, availableForSale } = product;
   const { addCartItem } = useCart();
-  const [message, formAction] = useFormState(addItem, null);
+  const [data, formAction] = useFormState(addItem, null);
 
   const variant = variants.find((variant: ProductVariant) =>
     variant.selectedOptions.every(
@@ -37,7 +43,10 @@ export function AddToCart({ product, state }: { product: Product, state: Product
   );
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
   const selectedVariantId = variant?.id || defaultVariantId;
-  const actionWithVariant = formAction.bind(null, selectedVariantId);
+  const actionWithVariant = formAction.bind(null, {
+    selectedVariantId,
+    quantity: 1,
+  });
   const finalVariant = variants.find(
     (variant) => variant.id === selectedVariantId
   )!;
@@ -54,7 +63,7 @@ export function AddToCart({ product, state }: { product: Product, state: Product
         selectedVariantId={selectedVariantId}
       />
       <p aria-live="polite" className="sr-only" role="status">
-        {message}
+        {data?.message}
       </p>
     </form>
   );

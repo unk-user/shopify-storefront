@@ -348,7 +348,7 @@ export async function createCart(): Promise<Cart> {
 export async function addToCart(
   cartId: string,
   lines: { merchandiseId: string; quantity: number }[]
-): Promise<Cart> {
+): Promise<{ cart: Cart; userErrors: { code: string; message: string }[] }> {
   const res = await shopifyFetch<ShopifyAddToCartOperation>({
     query: addToCartMutation,
     variables: {
@@ -357,7 +357,11 @@ export async function addToCart(
     },
     cache: 'no-store',
   });
-  return reshapeCart(res.body.data.cartLinesAdd.cart);
+
+  return {
+    cart: reshapeCart(res.body.data.cartLinesAdd.cart),
+    userErrors: res.body.data.cartLinesAdd.userErrors,
+  };
 }
 
 export async function removeFromCart(

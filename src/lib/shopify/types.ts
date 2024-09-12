@@ -231,6 +231,7 @@ export type ShopifyAddToCartOperation = {
   data: {
     cartLinesAdd: {
       cart: ShopifyCart;
+      userErrors: { code: string; message: string }[];
     };
   };
   variables: {

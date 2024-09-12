@@ -37,9 +37,18 @@ export async function addItem(
     return { status: 'error', message: 'Variant not selected' };
 
   try {
-    await addToCart(cartId, [{ merchandiseId: selectedVariantId, quantity }]);
-    return { status: 'success', message: 'Item added to cart' };
+    const { userErrors } = await addToCart(cartId, [
+      { merchandiseId: selectedVariantId, quantity },
+    ]);
+
+    return userErrors && userErrors.length > 0
+      ? { status: 'error', message: "you've reached the limit of this item, maximum quantity was added" }
+      : {
+          status: 'success',
+          message: 'item added to cart',
+        };
   } catch (e) {
+    console.log(e);
     return { status: 'error', message: 'Error adding item to cart' };
   } finally {
     revalidateTag(TAGS.cart);
