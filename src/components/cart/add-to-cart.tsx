@@ -9,6 +9,7 @@ import { addItem } from './actions';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { QuantityInput } from './quantity-input';
+import { Loader } from 'react-feather';
 
 const SubmitButton = ({
   availableForSale = true,
@@ -24,7 +25,7 @@ const SubmitButton = ({
       <Button
         type="submit"
         disabled
-        className="flex-1 h-12 text-base font-semibold"
+        className="flex-grow h-12 text-base font-semibold"
       >
         {availableForSale ? 'Select Options' : 'Out of Stock'}
       </Button>
@@ -36,9 +37,9 @@ const SubmitButton = ({
       type="submit"
       aria-label="Add to cart"
       disabled={pending}
-      className="flex-1 bg-gradient-to-r from-primary to-storefront-primary-400 h-12 text-base font-semibold"
+      className="flex-grow bg-gradient-to-r from-primary to-storefront-primary-400 h-12 text-base font-semibold"
     >
-      Add to Cart
+      {pending ? <Loader className='animate-spin'/> : 'Add to cart'}
     </Button>
   );
 };
@@ -79,7 +80,7 @@ export function AddToCart({ product }: { product: Product }) {
         addCartItem(finalVariant, product, quantity);
         actionWithVariant();
       }}
-      className="flex items-center gap-2"
+      className="flex flex-col-reverse md:flex-row gap-2"
     >
       <QuantityInput quantity={quantity} setQuantity={setQuantity} />
       <SubmitButton

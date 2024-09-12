@@ -17,7 +17,7 @@ export function QuantityInput({
   };
 
   return (
-    <div className="h-12 w-36 bg-secondary flex items-center">
+    <div className="h-12 w-full md:w-36 bg-secondary flex items-center">
       <button type="button" className="h-12 p-2" onClick={decrement}>
         <Minus width={20} height={20} />
       </button>
