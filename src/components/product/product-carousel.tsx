@@ -57,8 +57,8 @@ export function ProductCarousel({ product }: { product: Product }) {
                 <ZoomableImage
                   src={image.url}
                   alt={image.altText || 'Product Image'}
-                  priority={index === 1}
-                  loading={index === 1 ? 'eager' : 'lazy'}
+                  priority={index === selectedIndex}
+                  loading={index === selectedIndex ? 'eager' : 'lazy'}
                 />
               </div>
             </CarouselItem>
