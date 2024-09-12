@@ -13,7 +13,7 @@ export function CartButton() {
 
   useEffect(() => {
     const prevTotalItems = prevTotalItemsRef.current;
-    if (prevTotalItems !== totalItems && prevTotalItems !== undefined) {
+    if (prevTotalItems !== totalItems) {
       setIsPinging(true);
       const timer = setTimeout(() => setIsPinging(false), 300);
       return () => clearTimeout(timer);

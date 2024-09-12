@@ -77,12 +77,21 @@ export function AddToCart({ product }: { product: Product }) {
   return (
     <form
       action={async () => {
-        addCartItem(finalVariant, product, quantity);
+        addCartItem(
+          finalVariant,
+          product,
+          finalVariant.quantityAvailable,
+          quantity
+        );
         actionWithVariant();
       }}
       className="flex flex-col-reverse md:flex-row gap-2"
     >
-      <QuantityInput quantity={quantity} setQuantity={setQuantity} />
+      <QuantityInput
+        maxQuantity={finalVariant.quantityAvailable}
+        quantity={quantity}
+        setQuantity={setQuantity}
+      />
       <SubmitButton
         availableForSale={availableForSale}
         selectedVariantId={selectedVariantId}

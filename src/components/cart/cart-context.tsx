@@ -14,6 +14,7 @@ import {
   useMemo,
   useOptimistic,
 } from 'react';
+import { toast } from 'sonner';
 
 type UpdateType = 'plus' | 'minus' | 'delete';
 
@@ -33,6 +34,7 @@ type CartContextType = {
   addCartItem: (
     variant: ProductVariant,
     product: Product,
+    availableQuantity: number,
     quantity?: number
   ) => void;
 };
@@ -225,17 +227,35 @@ export function CartProvider({
   );
 
   const addCartItem = useCallback(
-    (variant: ProductVariant, product: Product, quantity?: number) => {
+    (
+      variant: ProductVariant,
+      product: Product,
+      availableQuantity: number,
+      quantity: number = 1
+    ) => {
+      const addedQuantity =
+        optimisticCart?.lines.find((item) => item.merchandise.id === variant.id)
+          ?.quantity ?? 0;
+
+      if (quantity + addedQuantity > availableQuantity) {
+        toast.error(
+          `Only ${availableQuantity - addedQuantity} of ${
+            variant.title
+          } available. Added ${availableQuantity - addedQuantity} to cart.`
+        );
+        quantity = availableQuantity - addedQuantity;
+      }
+
       updateOptimisticCart({
         type: 'ADD_ITEM',
         payload: {
           variant,
           product,
-          quantity: quantity && quantity > 0 ? quantity : 1,
+          quantity,
         },
       });
     },
-    [updateOptimisticCart]
+    [updateOptimisticCart, optimisticCart]
   );
 
   const value = useMemo(
