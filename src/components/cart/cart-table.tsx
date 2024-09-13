@@ -5,15 +5,20 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from '../ui/table';
 import { useCart } from './cart-context';
+import { QuantitySelect } from './quantity-select';
+import { Trash2 } from 'react-feather';
+import { Button } from '../ui/button';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import { QuantitySelect } from './quantity-select';
+import { useTransition } from 'react';
+import { toast } from 'sonner';
+import { removeItem } from './actions';
 
 export function CartTable() {
   const { cart } = useCart();
@@ -26,16 +31,16 @@ export function CartTable() {
     >
       <TableHeader>
         <TableRow className="uppercase *:text-primary-foreground/80">
-          <TableHead className="pl-0">Product</TableHead>
+          <TableHead className="pl-2">Product</TableHead>
           <TableHead className="max-md:hidden">Quantity</TableHead>
-          <TableHead>Total</TableHead>
+          <TableHead className="text-end pr-2">Total</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {cart?.totalQuantity && cart?.totalQuantity > 0 ? (
           cart?.lines.map((line, i) => (
             <TableRow key={line.id} className="*:align-top">
-              <TableCell className="pl-0">
+              <TableCell className="pl-2">
                 <div className="flex items-start gap-3">
                   <div className="relative w-[100px] max-md:w-[88px] aspect-square shrink-0">
                     <Image
@@ -46,8 +51,7 @@ export function CartTable() {
                       }
                       className="rounded-md"
                       sizes="(min-width: 768px) 100px, 88px"
-                      priority={i < 2}
-                      loading={i < 2 ? 'eager' : 'lazy'}
+                      loading="lazy"
                       fill
                     />
                   </div>
@@ -73,11 +77,14 @@ export function CartTable() {
               <TableCell className="max-md:hidden">
                 <QuantitySelect line={line} />
               </TableCell>
-              <TableCell className="font-semibold">
+              <TableCell className="font-semibold relative text-end pr-2">
                 {formatPrice(
                   line.cost.totalAmount.amount,
                   line.cost.totalAmount.currencyCode
                 )}
+                <div className="absolute bottom-4 right-0">
+                  <RemoveItem merchandiseId={line.merchandise.id} />
+                </div>
               </TableCell>
             </TableRow>
           ))
@@ -96,5 +103,36 @@ export function CartTable() {
         )}
       </TableBody>
     </Table>
+  );
+}
+
+function RemoveItem({ merchandiseId }: { merchandiseId: string }) {
+  const [isPending, startTransition] = useTransition();
+  const { updateCartItem } = useCart();
+
+  const handleRemove = async (formData: any) => {
+    updateCartItem(merchandiseId, 'delete');
+    startTransition(async () => {
+      const result = await removeItem(merchandiseId);
+      result.status === 'success'
+        ? toast.success(result.message)
+        : toast.error(result.message);
+    });
+  };
+
+  return (
+    <form action={handleRemove}>
+      <Button
+        variant="icon"
+        size="icon"
+        type="submit"
+        className="h-auto w-auto p-2 bg-transparent border-none group"
+      >
+        <Trash2
+          strokeWidth={1.5}
+          className="text-storefront-primary-300 group-hover:text-primary-foreground transition-colors duration-100"
+        />
+      </Button>
+    </form>
   );
 }
