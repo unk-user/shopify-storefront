@@ -23,7 +23,7 @@ export default async function CollectionPage({
 
   return (
     <>
-      <header className="mb-4 md:mb-6 flex md:items-center flex-col md:flex-row px-4 md:px-0">
+      <header className="mb-4 md:mb-6 flex md:items-center flex-col md:flex-row px-4 md:px-0 section-default">
         <h1 className="text-lg font-medium uppercase">
           {params.collection.replace('-', ' ').toUpperCase()} Collection{' '}
           <span className="md:inline hidden">
@@ -31,7 +31,7 @@ export default async function CollectionPage({
           </span>
         </h1>
         <div className="flex items-center mt-4 md:mt-0 md:ml-auto">
-          <p className="text-base text-storefront-primary-300 md:hidden">
+          <p className="text-base text-primary-foreground/70 md:hidden">
             {products.length} {resultsText}
           </p>
           <SortDropdown />

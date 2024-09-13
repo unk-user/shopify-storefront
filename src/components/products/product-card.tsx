@@ -116,7 +116,7 @@ export function ProductCard({
                       </div>
                     )
                 )}
-              <p className="text-xs text-storefront-primary-400">
+              <p className="text-xs text-primary-foreground/80">
                 {product.variants.length > 7 &&
                   '+' + (product.variants.length - 7)}
               </p>

@@ -2,6 +2,7 @@
 import { useCart } from '@/components/cart/cart-context';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { ShoppingBag } from 'react-feather';
 
@@ -30,18 +31,21 @@ export function CartButton() {
         'relative transition-all duration-300 easeOut',
         isPinging && 'border-storefront-accent border-2'
       )}
+      asChild
     >
-      <ShoppingBag width={24} height={24} strokeWidth={1.5} />
-      <div
-        className={cn(
-          'absolute h-4 min-w-4 leading-4 text-center align-middle bg-storefront-accent-500 translate-y-1/2 translate-x-1/2 bottom-2 right-2 rounded-sm text-xs',
-          {
-            hidden: !totalItems || totalItems === 0,
-          }
-        )}
-      >
-        {totalItems}
-      </div>
+      <Link href="/cart">
+        <ShoppingBag width={24} height={24} strokeWidth={1.5} />
+        <div
+          className={cn(
+            'absolute h-4 min-w-4 leading-4 text-center align-middle bg-storefront-accent-500 translate-y-1/2 translate-x-1/2 bottom-2 right-2 rounded-sm text-xs',
+            {
+              hidden: !totalItems || totalItems === 0,
+            }
+          )}
+        >
+          {totalItems}
+        </div>
+      </Link>
     </Button>
   );
 }

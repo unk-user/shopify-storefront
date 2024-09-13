@@ -88,7 +88,7 @@ export function AddToCart({ product }: { product: Product }) {
       className="flex flex-col-reverse md:flex-row gap-2"
     >
       <QuantityInput
-        maxQuantity={finalVariant.quantityAvailable}
+        maxQuantity={finalVariant?.quantityAvailable}
         quantity={quantity}
         setQuantity={setQuantity}
       />

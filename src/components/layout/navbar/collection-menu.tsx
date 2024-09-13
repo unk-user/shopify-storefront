@@ -72,7 +72,7 @@ export function CollectionMenu({
                 {collection.products.map((product) => (
                   <li key={product.handle}>
                     <Link
-                      className="text-xs text-storefront-primary-300 hover:text-primary-foreground"
+                      className="text-xs text-primary-foreground/70 hover:text-primary-foreground"
                       onClick={() => close()}
                       href={`/product/${product.handle}`}
                     >

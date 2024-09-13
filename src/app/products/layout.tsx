@@ -7,10 +7,10 @@ export default function ProductsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pt-8 pb-24 max-w-screen-2xl mx-auto">
+    <main className='main-layout'>
       <Suspense fallback={null}>
         <ChildrenWrapper>{children}</ChildrenWrapper>
       </Suspense>
-    </section>
+    </main>
   );
 }
