@@ -2,6 +2,8 @@
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { useCart } from './cart-context';
+import { useMemo } from 'react';
+import { formatPrice } from '@/lib/utils';
 
 interface FormattedPrice {
   subTotal: string;
@@ -9,12 +11,26 @@ interface FormattedPrice {
   tax: string;
 }
 
-export function SummaryCard({
-  formattedPrice,
-}: {
-  formattedPrice: FormattedPrice;
-}) {
+export function SummaryCard() {
   const { cart } = useCart();
+  const formattedPrice = useMemo(() => {
+    if (cart?.cost) {
+      const currencyCode = cart?.cost.totalAmount.currencyCode;
+      const subTotal = formatPrice(
+        cart?.cost?.subtotalAmount.amount,
+        currencyCode
+      );
+      const total = formatPrice(cart?.cost?.totalAmount.amount, currencyCode);
+      const tax = formatPrice(cart?.cost?.totalTaxAmount.amount, currencyCode);
+
+      return {
+        subTotal,
+        total,
+        tax,
+      };
+    }
+    return { subTotal: '0 MAD', total: '0 MAD', tax: '0 MAD' };
+  }, [cart?.cost]);
 
   return (
     <>
@@ -37,7 +53,11 @@ export function SummaryCard({
         Total
         <span className="ml-auto">{formattedPrice.total}</span>
       </div>
-      <Button className="w-full md:mt-8 bg-gradient-to-r from-primary to-storefront-primary-500" disabled={!cart} asChild>
+      <Button
+        className="w-full md:mt-8 bg-gradient-to-r from-primary to-storefront-primary-500"
+        disabled={!cart}
+        asChild
+      >
         <Link href={cart?.checkoutUrl || ''}>Check Out</Link>
       </Button>
     </>

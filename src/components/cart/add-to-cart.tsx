@@ -1,12 +1,11 @@
 'use client';
-
 import { Product, ProductVariant } from '@/lib/shopify/types';
 import { Button } from '../ui/button';
 import { useCart } from './cart-context';
 import { useProduct } from '../product/product-context';
 import { useFormState, useFormStatus } from 'react-dom';
 import { addItem } from './actions';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { QuantityInput } from './quantity-input';
 import { Loader } from 'react-feather';
@@ -48,16 +47,8 @@ export function AddToCart({ product }: { product: Product }) {
   const { variants, availableForSale } = product;
   const { addCartItem } = useCart();
   const { state } = useProduct();
-  const [data, formAction] = useFormState(addItem, null);
+  const [isPending, startTransition] = useTransition();
   const [quantity, setQuantity] = useState(1);
-
-  useEffect(() => {
-    if (data) {
-      data.status === 'success'
-        ? toast.success(data.message)
-        : toast.error(data.message);
-    }
-  }, [data]);
 
   const variant = variants.find((variant: ProductVariant) =>
     variant.selectedOptions.every(
@@ -66,25 +57,28 @@ export function AddToCart({ product }: { product: Product }) {
   );
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
   const selectedVariantId = variant?.id || defaultVariantId;
-  const actionWithVariant = formAction.bind(null, {
-    selectedVariantId,
-    quantity,
-  });
   const finalVariant = variants.find(
     (variant) => variant.id === selectedVariantId
   )!;
 
+  const handleAddToCart = async () => {
+    addCartItem(
+      finalVariant,
+      product,
+      finalVariant.quantityAvailable,
+      quantity
+    );
+    startTransition(async () => {
+      const response = await addItem(finalVariant.id, quantity);
+      response.status === 'success'
+        ? toast.success(response.message)
+        : toast.error(response.message);
+    });
+  };
+
   return (
     <form
-      action={async () => {
-        addCartItem(
-          finalVariant,
-          product,
-          finalVariant.quantityAvailable,
-          quantity
-        );
-        actionWithVariant();
-      }}
+      action={handleAddToCart}
       className="flex flex-col-reverse md:flex-row gap-2"
     >
       <QuantityInput
@@ -96,9 +90,6 @@ export function AddToCart({ product }: { product: Product }) {
         availableForSale={availableForSale}
         selectedVariantId={selectedVariantId}
       />
-      <p aria-live="polite" className="sr-only" role="status">
-        {data?.message}
-      </p>
     </form>
   );
 }
