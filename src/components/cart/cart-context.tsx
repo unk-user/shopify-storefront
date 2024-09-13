@@ -97,6 +97,7 @@ const createOrUpdateCartItem = (
     merchandise: {
       id: variant.id,
       title: variant.title,
+      quantityAvailable: variant.quantityAvailable,
       selectedOptions: variant.selectedOptions,
       product: {
         id: product.id,
