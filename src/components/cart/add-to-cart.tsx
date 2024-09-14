@@ -3,9 +3,9 @@ import { Product, ProductVariant } from '@/lib/shopify/types';
 import { Button } from '../ui/button';
 import { useCart } from './cart-context';
 import { useProduct } from '../product/product-context';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { addItem } from './actions';
-import { useEffect, useState, useTransition } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { QuantityInput } from './quantity-input';
 import { Loader } from 'react-feather';
@@ -47,7 +47,6 @@ export function AddToCart({ product }: { product: Product }) {
   const { variants, availableForSale } = product;
   const { addCartItem } = useCart();
   const { state } = useProduct();
-  const [isPending, startTransition] = useTransition();
   const [quantity, setQuantity] = useState(1);
 
   const variant = variants.find((variant: ProductVariant) =>
@@ -68,12 +67,10 @@ export function AddToCart({ product }: { product: Product }) {
       finalVariant.quantityAvailable,
       quantity
     );
-    startTransition(async () => {
-      const response = await addItem(finalVariant.id, quantity);
-      response.status === 'success'
-        ? toast.success(response.message)
-        : toast.error(response.message);
-    });
+    const response = await addItem(finalVariant.id, quantity);
+    response.status === 'success'
+      ? toast.success(response.message)
+      : toast.error(response.message);
   };
 
   return (

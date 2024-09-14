@@ -28,11 +28,11 @@ export async function addItem(
 ): Promise<ActionResponse> {
   let cartId =
     cookies().get('cartId')?.value || (await createCartAndSetCookie());
+  if (!cartId) return { status: 'error', message: 'Cart ID not found' };
+
+  revalidatePath('/cart');
 
   try {
-    revalidateTag(TAGS.cart);
-
-    if (!cartId) return { status: 'error', message: 'Cart ID not found' };
     if (!selectedVariantId)
       return { status: 'error', message: 'Variant not selected' };
 
@@ -43,6 +43,8 @@ export async function addItem(
     };
   } catch (e) {
     return { status: 'error', message: 'Error adding item to cart' };
+  } finally {
+    revalidateTag(TAGS.cart);
   }
 }
 
@@ -50,8 +52,6 @@ export async function removeItem(
   merchandiseId: string
 ): Promise<ActionResponse> {
   try {
-    revalidateTag(TAGS.cart);
-
     let cartId = cookies().get('cartId')?.value;
     if (!cartId) return { status: 'error', message: 'Missing cart ID' };
 
@@ -74,26 +74,16 @@ export async function removeItem(
 }
 
 export async function updateItemQuantity(
-  prevState: any,
-  payload: {
-    merchandiseId: string;
-    quantity: number;
-  }
-) {
+  merchandiseId: string,
+  quantity: number
+): Promise<ActionResponse> {
   let cartId = cookies().get('cartId')?.value;
-
-  if (!cartId) {
-    return 'Missing cart ID';
-  }
-
-  const { merchandiseId, quantity } = payload;
+  if (!cartId) return { status: 'error', message: 'Missing cart ID' };
 
   try {
     const cart = await getCart(cartId);
 
-    if (!cart) {
-      return 'Error fetching cart';
-    }
+    if (!cart) return { status: 'error', message: 'Error fetching cart' };
 
     const lineItem = cart.lines.find(
       (line) => line.merchandise.id === merchandiseId
@@ -102,6 +92,7 @@ export async function updateItemQuantity(
     if (lineItem && lineItem.id) {
       if (quantity === 0) {
         await removeFromCart(cartId, [lineItem.id]);
+        return { status: 'success', message: 'Item removed from cart' };
       } else {
         await updateCart(cartId, [
           {
@@ -110,13 +101,16 @@ export async function updateItemQuantity(
             quantity,
           },
         ]);
+        return { status: 'success', message: 'Item quantity updated' };
       }
     } else if (quantity > 0) {
       // If the item doesn't exist in the cart and quantity > 0, add it
       await addToCart(cartId, [{ merchandiseId, quantity }]);
+      return { status: 'success', message: 'Item added to cart' };
     }
+    return { status: 'success', message: 'Cart action confirmed' };
   } catch (e) {
-    return 'Error updating item quantity';
+    return { status: 'error', message: 'Error updating item quantity' };
   } finally {
     revalidateTag(TAGS.cart);
   }

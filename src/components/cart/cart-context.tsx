@@ -16,12 +16,16 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 
-type UpdateType = 'plus' | 'minus' | 'delete';
+type UpdateType = 'plus' | 'minus' | 'delete' | 'quantity';
 
 type CartAction =
   | {
       type: 'UPDATE_ITEM';
-      payload: { merchandiseId: string; updateType: UpdateType };
+      payload: {
+        merchandiseId: string;
+        updateType: UpdateType;
+        quantity?: number;
+      };
     }
   | {
       type: 'ADD_ITEM';
@@ -30,7 +34,11 @@ type CartAction =
 
 type CartContextType = {
   cart: Cart | undefined;
-  updateCartItem: (merchandiseId: string, updateType: UpdateType) => void;
+  updateCartItem: (
+    merchandiseId: string,
+    updateType: UpdateType,
+    quantity?: number
+  ) => void;
   addCartItem: (
     variant: ProductVariant,
     product: Product,
@@ -47,12 +55,17 @@ const calculateItemCost = (quantity: number, price: string): string => {
 
 const updateCartItem = (
   item: CartItem,
-  updateType: UpdateType
+  updateType: UpdateType,
+  quantity?: number
 ): CartItem | null => {
   if (updateType === 'delete') return null;
 
   const newQuantity =
-    updateType === 'plus' ? item.quantity + 1 : item.quantity - 1;
+    updateType === 'quantity' && quantity
+      ? quantity
+      : updateType === 'plus'
+      ? item.quantity + 1
+      : item.quantity - 1;
   if (newQuantity === 0) return null;
 
   const singleItemAmount = Number(item.cost.totalAmount.amount) / item.quantity;
@@ -148,11 +161,11 @@ const cartReducer = (state: Cart | undefined, action: CartAction): Cart => {
 
   switch (action.type) {
     case 'UPDATE_ITEM': {
-      const { merchandiseId, updateType } = action.payload;
+      const { merchandiseId, updateType, quantity } = action.payload;
       const updatedLines = currentCart.lines
         .map((item) =>
           item.merchandise.id === merchandiseId
-            ? updateCartItem(item, updateType)
+            ? updateCartItem(item, updateType, quantity)
             : item
         )
         .filter(Boolean) as CartItem[];
@@ -218,10 +231,10 @@ export function CartProvider({
   );
 
   const updateCartItem = useCallback(
-    (merchandiseId: string, updateType: UpdateType) => {
+    (merchandiseId: string, updateType: UpdateType, quantity?: number) => {
       updateOptimisticCart({
         type: 'UPDATE_ITEM',
-        payload: { merchandiseId, updateType },
+        payload: { merchandiseId, updateType, quantity },
       });
     },
     [updateOptimisticCart]

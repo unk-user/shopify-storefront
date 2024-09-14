@@ -16,7 +16,6 @@ import { Button } from '../ui/button';
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTransition } from 'react';
 import { toast } from 'sonner';
 import { removeItem } from './actions';
 
@@ -107,17 +106,14 @@ export function CartTable() {
 }
 
 function RemoveItem({ merchandiseId }: { merchandiseId: string }) {
-  const [isPending, startTransition] = useTransition();
   const { updateCartItem } = useCart();
 
   const handleRemove = async (formData: any) => {
     updateCartItem(merchandiseId, 'delete');
-    startTransition(async () => {
-      const result = await removeItem(merchandiseId);
-      result.status === 'success'
-        ? toast.success(result.message)
-        : toast.error(result.message);
-    });
+    const result = await removeItem(merchandiseId);
+    result.status === 'success'
+      ? toast.success(result.message)
+      : toast.error(result.message);
   };
 
   return (
@@ -136,3 +132,5 @@ function RemoveItem({ merchandiseId }: { merchandiseId: string }) {
     </form>
   );
 }
+
+
