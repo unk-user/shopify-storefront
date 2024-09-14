@@ -11,16 +11,14 @@ import {
 } from '../ui/table';
 import { useCart } from './cart-context';
 import { QuantitySelect } from './quantity-select';
-import { Trash2 } from 'react-feather';
-import { Button } from '../ui/button';
+import { RemoveItem } from './remove-from-cart';
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { toast } from 'sonner';
-import { removeItem } from './actions';
 
 export function CartTable() {
   const { cart } = useCart();
+  const cartNotEmpty = cart?.totalQuantity && cart?.totalQuantity > 0;
 
   return (
     <Table
@@ -36,7 +34,7 @@ export function CartTable() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {cart?.totalQuantity && cart?.totalQuantity > 0 ? (
+        {cartNotEmpty ? (
           cart?.lines.map((line, i) => (
             <TableRow key={line.id} className="*:align-top">
               <TableCell className="pl-2">
@@ -104,33 +102,3 @@ export function CartTable() {
     </Table>
   );
 }
-
-function RemoveItem({ merchandiseId }: { merchandiseId: string }) {
-  const { updateCartItem } = useCart();
-
-  const handleRemove = async (formData: any) => {
-    updateCartItem(merchandiseId, 'delete');
-    const result = await removeItem(merchandiseId);
-    result.status === 'success'
-      ? toast.success(result.message)
-      : toast.error(result.message);
-  };
-
-  return (
-    <form action={handleRemove}>
-      <Button
-        variant="icon"
-        size="icon"
-        type="submit"
-        className="h-auto w-auto p-2 bg-transparent border-none group"
-      >
-        <Trash2
-          strokeWidth={1.5}
-          className="text-storefront-primary-300 group-hover:text-primary-foreground transition-colors duration-100"
-        />
-      </Button>
-    </form>
-  );
-}
-
-

@@ -17,7 +17,7 @@ export function QuantitySelect({ line }: { line: CartItem }) {
   const { updateCartItem } = useCart();
   const formRef = useRef<HTMLFormElement>(null);
 
-  const handleSubmit = async (formData: any) => {
+  const handleSubmit = async (formData: FormData) => {
     const quantity = Number(formData.get('quantity'));
     updateCartItem(line.merchandise.id, 'quantity', quantity);
     const response = await updateItemQuantity(line.merchandise.id, quantity);

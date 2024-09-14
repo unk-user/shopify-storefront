@@ -13,7 +13,6 @@ import { useDrawer } from './drawer-context';
 import Image from 'next/image';
 import { cn, formatPrice } from '@/lib/utils';
 import { ProductState, findSelectedVariant } from '@/lib/productUtils';
-import { AddToCart } from './add-to-cart';
 import { useEffect, useMemo, useState } from 'react';
 import { ProductVariant } from '@/lib/shopify/types';
 
@@ -118,7 +117,6 @@ export function ProductDrawer() {
               ))}
             </div>
           </div>
-          <AddToCart product={product} state={productState} />
         </div>
       </DrawerContent>
     </Drawer>
