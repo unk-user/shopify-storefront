@@ -285,3 +285,20 @@ export type NavbarCollection = {
     handle: string;
   }[];
 }[];
+
+export type BlogArticle = {
+  title: string;
+  articleByHandle: {
+    title: string;
+    contentHtml: string;
+  };
+};
+
+export type ShopifyArticleOperation = {
+  data: {
+    blog: BlogArticle;
+  };
+  variables: {
+    handle: string;
+  };
+};

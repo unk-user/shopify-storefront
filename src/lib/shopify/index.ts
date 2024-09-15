@@ -26,6 +26,7 @@ import {
   NavbarCollection,
   Product,
   ShopifyAddToCartOperation,
+  ShopifyArticleOperation,
   ShopifyCart,
   ShopifyCartOperation,
   ShopifyCollection,
@@ -52,6 +53,7 @@ import {
   editCartItemsMutation,
   removeFromCartMutation,
 } from './mutations/cart';
+import { getProductArticleQuery } from './queries/article';
 
 const domain = process.env.SHOPIFY_SHOP_DOMAIN
   ? ensureStartsWith(process.env.SHOPIFY_SHOP_DOMAIN, 'https://')
@@ -436,6 +438,21 @@ export async function getNavbarCollections(): Promise<
     }));
 }
 
+export async function getProductArticle(handle: string) {
+  const res = await shopifyFetch<ShopifyArticleOperation>({
+    query: getProductArticleQuery,
+    variables: {
+      handle,
+    },
+    tags: [TAGS.article],
+  });
+
+  console.log('shopifyFetchResponse: ', res.body.data);
+
+  return res.body.data.blog;
+}
+
+//TODO: DONT FORGET TO IMPLEMENT OTHER TAGS REVALIDATION
 // This is called from `app/api/revalidate.ts` so providers can control revalidation logic.
 export async function revalidate(req: NextRequest): Promise<NextResponse> {
   // We always need to respond with a 200 status code to Shopify,
