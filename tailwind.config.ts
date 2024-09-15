@@ -29,6 +29,16 @@ const config = {
       '5xl': ['3.815rem', { lineHeight: '1.125' }],
     },
     extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            color: 'hsl(var(--primary-foreground))',
+            headings: {
+              color: 'hsl(var(--primary-foreground))',
+            },
+          },
+        },
+      },
       fontFamily: {
         poppins: 'var(--font-poppins)',
       },
@@ -135,7 +145,7 @@ const config = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
 } satisfies Config;
 
 export default config;

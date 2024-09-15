@@ -11,7 +11,6 @@ import { Suspense } from 'react';
 //TODO: PRICE BASED ON SELECTED VARIANT
 //TODO: BETTER LOADING FALLBACKS
 
-
 export default async function ProductPage({
   params,
 }: {
@@ -22,11 +21,13 @@ export default async function ProductPage({
   if (product)
     return (
       <>
-        <section className="section-default flex flex-col md:flex-row mb-24">
-          <ProductCarousel product={product} />
-          <div className="flex-1 px-4 md:pl-4 lg:pl-8 xl:pl-16 pt-4 md:pt-0">
-            <ProductDetails product={product} />
-          </div>
+        <section className="section-default flex flex-col md:flex-row">
+          <Suspense>
+            <ProductCarousel product={product} />
+            <div className="flex-1 px-4 md:pl-4 lg:pl-8 xl:pl-16 pt-4 md:pt-0">
+              <ProductDetails product={product} />
+            </div>
+          </Suspense>
         </section>
         <section className="section-default">
           <Suspense fallback={<div>Loading...</div>}>
