@@ -236,7 +236,6 @@ export async function getCollectionProducts({
   });
 
   if (!res.body.data.collection) {
-    console.log('No collection found for: ', collection);
     return [];
   }
 
@@ -319,7 +318,6 @@ export async function getProducts({
       sortKey,
     },
   });
-  console.log('fetching');
 
   return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
 }
@@ -446,8 +444,6 @@ export async function getProductArticle(handle: string) {
     },
     tags: [TAGS.article],
   });
-
-  console.log('shopifyFetchResponse: ', res.body.data);
 
   return res.body.data.blog;
 }
