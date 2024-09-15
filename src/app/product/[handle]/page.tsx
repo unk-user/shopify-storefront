@@ -1,11 +1,16 @@
 import { AddToCart } from '@/components/cart/add-to-cart';
 import { ProductOptions } from '@/components/product/options';
+import { ProductArticle } from '@/components/product/product-article';
 import { ProductCarousel } from '@/components/product/product-carousel';
 import { getProduct } from '@/lib/shopify';
 import { Product } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/utils';
+import { divide } from 'lodash';
+import { Suspense } from 'react';
 
 //TODO: PRICE BASED ON SELECTED VARIANT
+//TODO: BETTER LOADING FALLBACKS
+
 
 export default async function ProductPage({
   params,
@@ -16,12 +21,19 @@ export default async function ProductPage({
 
   if (product)
     return (
-      <section className="section-default flex flex-col md:flex-row min-h-screen">
-        <ProductCarousel product={product} />
-        <div className="flex-1 px-4 md:pl-4 lg:pl-8 xl:pl-16 pt-4 md:pt-0">
-          <ProductDetails product={product} />
-        </div>
-      </section>
+      <>
+        <section className="section-default flex flex-col md:flex-row mb-24">
+          <ProductCarousel product={product} />
+          <div className="flex-1 px-4 md:pl-4 lg:pl-8 xl:pl-16 pt-4 md:pt-0">
+            <ProductDetails product={product} />
+          </div>
+        </section>
+        <section className="section-default">
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProductArticle handle={params.handle} />
+          </Suspense>
+        </section>
+      </>
     );
 }
 
