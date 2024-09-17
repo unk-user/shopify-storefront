@@ -32,7 +32,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.className} ${poppins.variable}`}>
+      <body
+        className={`${inter.className} ${poppins.variable} relative`}
+      >
         <CartProvider cartPromise={cart}>
           <Navbar />
           {children}

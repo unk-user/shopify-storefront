@@ -89,5 +89,23 @@
   input[type='number'] {
     -moz-appearance: textfield;
   }
-}
 
+  .gradient-circle-tr {
+    position: absolute;
+    width: 100vw;
+    height: 100vw;
+    top: 0;
+    right: 0;
+    border-radius: 0 0 0 100%;
+    pointer-events: none;
+    z-index: -1;
+    background: radial-gradient(
+      circle at top right,
+      rgba(244, 244, 244, 0.15) 0%,
+      rgba(244, 244, 244, 0.1) 10%,
+      rgba(244, 244, 244, 0.025) 40%,
+      rgba(244, 244, 244, 0) 60%
+    );
+    overflow: hidden;
+  }
+}
