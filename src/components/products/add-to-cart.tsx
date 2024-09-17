@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { QuantityInput } from '../cart/quantity-input';
 import { Loader } from 'react-feather';
+import { useDrawer } from './drawer-context';
 
 const SubmitButton = ({
   availableForSale = true,
@@ -51,6 +52,7 @@ export function AddToCart({
   variant?: ProductVariant;
 }) {
   const { variants, availableForSale } = product;
+  const { closeDrawer } = useDrawer();
   const [quantity, setQuantity] = useState(1);
   const { addCartItem } = useCart();
 
@@ -68,17 +70,16 @@ export function AddToCart({
       quantity
     );
     const response = await addItem(finalVariant.id, quantity);
+    closeDrawer();
     response.status === 'success'
       ? toast.success(response.message)
       : toast.error(response.message);
   };
 
   return (
-    <form
-      action={handleAddToCart}
-      className="flex flex-col-reverse md:flex-row gap-2"
-    >
+    <form action={handleAddToCart} className="flex flex-col gap-2">
       <QuantityInput
+        className="!w-full"
         maxQuantity={finalVariant?.quantityAvailable}
         quantity={quantity}
         setQuantity={setQuantity}
