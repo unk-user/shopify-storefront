@@ -1,23 +1,25 @@
+import { ProductsGrid } from '@/components/products/grid';
+import { ProductCard } from '@/components/products/product-card';
 import { getCollectionProducts } from '@/lib/shopify';
-import Image from 'next/image';
+import Link from 'next/link';
 
-//TODO: lift props to top level
 export async function FeaturedProducts() {
-  const products = await getCollectionProducts({ collection: 'featured' });
+  const featuredProducts = await getCollectionProducts({
+    collection: 'nextjs-frontend-featured',
+    limit: 4,
+  });
 
   return (
-    <section className="grid grid-rows-1 grid-cols-5 h-[300px] w-screen px-16 overflow-x-scroll my-56">
-      {products.map((product) => (
-        <div key={product.id} className='relative'>
-          <Image
-            src={product.featuredImage?.url}
-            alt={product.featuredImage?.altText}
-            sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className='object-cover'
-            fill
-          />
-        </div>
-      ))}
+    <section className="section-default pb-16 pt-24">
+      <div className='flex items-center mb-4'>
+        <h2 className='text-lg font-semibold uppercase'>Featured Products</h2>
+        <Link href="/products" className='underline ml-auto'>View all</Link>
+      </div>
+      <ProductsGrid>
+        {featuredProducts.map((product) => (
+          <ProductCard product={product} key={product.id} priority />
+        ))}
+      </ProductsGrid>
     </section>
   );
 }
