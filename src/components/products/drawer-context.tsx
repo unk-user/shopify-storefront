@@ -1,13 +1,20 @@
 'use client';
 
+import { ProductState } from '@/lib/productUtils';
 import { Product } from '@/lib/shopify/types';
-import { createContext, useContext, useMemo, useState } from 'react';
-
-
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 
 type DrawerContextType = {
   product: Product | null;
   open: boolean;
+  productState: ProductState;
+  updateProductState: (name: string, value: string) => ProductState;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   openDrawer: (product: Product) => void;
   closeDrawer: () => void;
@@ -18,6 +25,16 @@ const DrawerContext = createContext<DrawerContextType | undefined>(undefined);
 export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
+  const [productState, setProductState] = useState<ProductState>({});
+  
+  const updateProductState = useCallback(
+    (name: string, value: string) => {
+      const newState = { ...productState, [name.toLowerCase()]: value };
+      setProductState(newState);
+      return newState;
+    },
+    [productState]
+  );
 
   const openDrawer = (product: Product) => {
     setProduct(product);
@@ -26,6 +43,7 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
 
   const closeDrawer = () => {
     setProduct(null);
+    setProductState({});
     setOpen(false);
   };
 
@@ -33,11 +51,13 @@ export function DrawerProvider({ children }: { children: React.ReactNode }) {
     () => ({
       product,
       open,
+      productState,
+      updateProductState,
       setOpen,
       openDrawer,
       closeDrawer,
     }),
-    [product, open]
+    [product, open, productState, updateProductState]
   );
 
   return (

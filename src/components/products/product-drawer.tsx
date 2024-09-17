@@ -3,59 +3,45 @@
 import { Button } from '@/components/ui/button';
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
 import { useDrawer } from './drawer-context';
-import Image from 'next/image';
 import { cn, formatPrice } from '@/lib/utils';
-import { ProductState, findSelectedVariant } from '@/lib/productUtils';
-import { useEffect, useMemo, useState } from 'react';
-import { ProductVariant } from '@/lib/shopify/types';
+import { findSelectedVariant, ProductState } from '@/lib/productUtils';
+import { useMemo } from 'react';
 
+import Image from 'next/image';
+import { ProductOptions } from './options';
+import { AddToCart } from './add-to-cart';
 //Refactor and add isAvailableForSale check
 
 export function ProductDrawer() {
-  const { open, setOpen, closeDrawer, product } = useDrawer();
-  const [productState, setProductState] = useState<ProductState>({});
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant>();
-  const updateProductState = (name: string, value: string) => {
-    setProductState((prev) => ({ ...prev, [name.toLowerCase()]: value }));
-  };
+  const {
+    open,
+    product,
+    productState,
+    setOpen,
+    closeDrawer,
+    updateProductState,
+  } = useDrawer();
 
-  useEffect(() => {
-    if (product) {
-      const initialState = product.availableForSale
-        ? product.variants
-            .find((variant) => variant.availableForSale)
-            ?.selectedOptions.reduce(
-              (acc, option) => ({
-                ...acc,
-                [option.name.toLowerCase()]: option.value,
-              }),
-              {}
-            ) ?? {}
-        : product.variants[0].selectedOptions.reduce(
-            (acc, option) => ({
-              ...acc,
-              [option.name.toLowerCase()]: option.value,
-            }),
-            {}
-          );
-
-      setProductState(initialState ?? {});
-    }
-  }, [product]);
-
-  useEffect(() => {
-    if (product) {
-      const selectedVariant = findSelectedVariant(product, productState);
-      setSelectedVariant(selectedVariant);
-    }
+  const selectedVariant = useMemo(() => {
+    return product ? findSelectedVariant(product, productState) : undefined;
   }, [product, productState]);
+
+  const formattedPrice = useMemo(
+    () =>
+      product &&
+      formatPrice(
+        selectedVariant?.price.amount ||
+          product?.priceRange.minVariantPrice.amount,
+        product.priceRange.minVariantPrice.currencyCode
+      ),
+    [product, selectedVariant]
+  );
 
   if (!product) {
     return null;
@@ -70,7 +56,7 @@ export function ProductDrawer() {
         </DrawerHeader>
         <div className="flex flex-col p-4">
           <div className="flex items-start gap-4">
-            <div className="relative w-[100px] h-[100px]">
+            <div className="relative w-[100px] h-[100px] shrink-0">
               {product.variants
                 .filter((variant) => variant.availableForSale)
                 .map((variant) => (
@@ -78,45 +64,24 @@ export function ProductDrawer() {
                     key={variant.id}
                     src={variant.image.url}
                     alt={variant.image.altText}
-                    className={cn([
-                      selectedVariant && selectedVariant.id === variant.id
-                        ? 'opacity-100'
-                        : 'opacity-0',
-                    ])}
+                    className={cn(
+                      'opacity-0',
+                      selectedVariant
+                        ? selectedVariant.id === variant.id && 'opacity-100'
+                        : 'opacity-100'
+                    )}
+                    sizes="100px"
                     fill
                   />
                 ))}
             </div>
             <div>
-              <h3>{}</h3>
-              <p className="font-bold">
-                {formatPrice(
-                  product.priceRange.minVariantPrice.amount,
-                  product.priceRange.minVariantPrice.currencyCode
-                )}
-              </p>
-            </div>
-            <div className="flex flex-col gap-2">
-              {product.options.map((option) => (
-                <div className="flex items-center gap-1" key={option.id}>
-                  {option.values.map((value) => (
-                    <Button
-                      key={value}
-                      onClick={() => updateProductState(option.name, value)}
-                      className={
-                        productState[option.name.toLowerCase()] === value
-                          ? 'bg-blue-900'
-                          : ''
-                      }
-                      size="sm"
-                    >
-                      {value}
-                    </Button>
-                  ))}
-                </div>
-              ))}
+              <h3 className='font-medium'>{product.title}</h3>
+              <p className="font-bold text-storefront-accent-400">{formattedPrice}</p>
             </div>
           </div>
+          <ProductOptions product={product} state={productState} />
+          <AddToCart product={product} variant={selectedVariant} />
         </div>
       </DrawerContent>
     </Drawer>
