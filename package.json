@@ -20,6 +20,8 @@
     "@tanstack/react-query": "^5.53.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "embla-carousel": "8.2.0",
+    "embla-carousel-autoplay": "^8.2.0",
     "embla-carousel-react": "^8.2.0",
     "framer-motion": "^11.3.29",
     "lodash": "^4.17.21",
