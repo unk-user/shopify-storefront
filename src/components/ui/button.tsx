@@ -21,6 +21,8 @@ const buttonVariants = cva(
         icon: 'font-normal rounded-full border border-input bg-secondary hover:bg-[#2E2E2E]',
         mobileNavlink:
           'text-lg font-menu flex items-center justify-start underline-offset-4 hover:underline uppercase w-full px-2 py-3',
+        primary:
+          'text-base rounded-sm bg-gradient-to-r from-primary to-storefront-primary-500 hover:from-primary/80 hover:to-storefront-primary-500/80 max-md:w-full',
       },
       size: {
         default: 'h-11 px-4 py-2',
