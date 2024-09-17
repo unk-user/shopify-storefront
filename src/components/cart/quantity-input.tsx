@@ -2,15 +2,18 @@
 
 import { Minus, Plus } from 'react-feather';
 import { Input } from '../ui/input';
+import { cn } from '@/lib/utils';
 
 export function QuantityInput({
   maxQuantity,
   quantity,
   setQuantity,
+  className,
 }: {
   maxQuantity: number;
   quantity: number;
   setQuantity: (value: number) => void;
+  className?: string;
 }) {
   const increment = () => quantity < maxQuantity && setQuantity(quantity + 1);
   const decrement = () => quantity > 0 && setQuantity(quantity - 1);
@@ -19,7 +22,12 @@ export function QuantityInput({
   };
 
   return (
-    <div className="h-12 w-full md:w-36 bg-secondary flex items-center">
+    <div
+      className={cn(
+        className,
+        'h-12 w-full md:w-36 bg-secondary flex items-center'
+      )}
+    >
       <button type="button" className="h-12 p-2" onClick={decrement}>
         <Minus width={20} height={20} />
       </button>
