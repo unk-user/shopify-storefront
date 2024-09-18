@@ -2,7 +2,7 @@ import { AddToCart } from '@/components/cart/add-to-cart';
 import { ProductOptions } from '@/components/product/options';
 import { ProductArticle } from '@/components/product/product-article';
 import { ProductCarousel } from '@/components/product/product-carousel';
-import { getProduct } from '@/lib/shopify';
+import { getProduct, getProductArticle } from '@/lib/shopify';
 import { Product } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/utils';
 import { divide } from 'lodash';
@@ -16,7 +16,13 @@ export default async function ProductPage({
 }: {
   params: { handle: string };
 }) {
-  const product = await getProduct(params.handle);
+  const productPromise = getProduct(params.handle);
+  const productBlogPromise = getProductArticle(params.handle);
+
+  const [product, productBlog] = await Promise.all([
+    productPromise,
+    productBlogPromise,
+  ]);
 
   if (product)
     return (
@@ -30,9 +36,9 @@ export default async function ProductPage({
           </Suspense>
         </section>
         <section className="section-default">
-          <Suspense fallback={<div>Loading...</div>}>
-            <ProductArticle handle={params.handle} />
-          </Suspense>
+          {!!productBlog.articleByHandle?.contentHtml ? (
+            <ProductArticle productBlog={productBlog} />
+          ) : null}
         </section>
       </>
     );

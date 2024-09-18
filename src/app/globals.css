@@ -80,6 +80,10 @@
     @apply max-w-screen-2xl mx-auto;
   }
 
+  .mobile-px {
+    @apply max-md:px-4
+  }
+
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     @apply appearance-none m-0;

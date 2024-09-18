@@ -1,0 +1,4 @@
+.carousel-container {
+  box-shadow: -4px 4px 12px 0px rgba(0, 0, 0, 0.25);
+  @apply max-w-screen-lg rounded-xl mx-auto relative overflow-hidden h-[364px] md:h-[600px] ;
+}
