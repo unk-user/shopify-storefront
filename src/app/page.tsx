@@ -1,3 +1,4 @@
+import { BenefitsSection } from '@/components/layout/landing-page/benefits-section';
 import { FeaturedProducts } from '@/components/layout/landing-page/featured-products';
 import { FeaturesSection } from '@/components/layout/landing-page/features-section';
 import { HeroProduct } from '@/components/layout/landing-page/hero-product';
@@ -12,6 +13,7 @@ export default async function Home() {
         <HeroProduct />
         <FeaturedProducts />
         <FeaturesSection />
+        <BenefitsSection />
       </main>
     </>
   );
