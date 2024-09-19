@@ -5,7 +5,6 @@ import { ProductCarousel } from '@/components/product/product-carousel';
 import { getProduct, getProductArticle } from '@/lib/shopify';
 import { Product } from '@/lib/shopify/types';
 import { formatPrice } from '@/lib/utils';
-import { divide } from 'lodash';
 import { Suspense } from 'react';
 
 //TODO: PRICE BASED ON SELECTED VARIANT
@@ -16,28 +15,23 @@ export default async function ProductPage({
 }: {
   params: { handle: string };
 }) {
-  const productPromise = getProduct(params.handle);
-  const productBlogPromise = getProductArticle(params.handle);
-
-  const [product, productBlog] = await Promise.all([
-    productPromise,
-    productBlogPromise,
-  ]);
+  const product = await getProduct(params.handle);
+  const productBlog = await getProductArticle(params.handle);
 
   if (product)
     return (
       <>
         <section className="section-default flex flex-col md:flex-row">
-          <Suspense>
-            <ProductCarousel product={product} />
-            <div className="flex-1 px-4 md:pl-4 lg:pl-8 xl:pl-16 pt-4 md:pt-0">
-              <ProductDetails product={product} />
-            </div>
-          </Suspense>
+          <ProductCarousel product={product} />
+          <div className="flex-1 px-4 md:pl-4 lg:pl-8 xl:pl-16 pt-4 md:pt-0">
+            <ProductDetails product={product} />
+          </div>
         </section>
         <section className="section-default">
           {!!productBlog.articleByHandle?.contentHtml ? (
-            <ProductArticle productBlog={productBlog} />
+            <Suspense>
+              <ProductArticle productBlog={productBlog} />
+            </Suspense>
           ) : null}
         </section>
       </>
