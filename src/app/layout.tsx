@@ -32,9 +32,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} ${poppins.variable} relative`}
-      >
+      <body className={`${inter.className} ${poppins.variable} relative`}>
         <CartProvider cartPromise={cart}>
           <Navbar />
           {children}
@@ -45,6 +43,7 @@ export default async function RootLayout({
           toastOptions={{ className: 'mt-14 md:mt-8' }}
           richColors
         />
+        <footer className="w-screen h-[524px] bg-secondary" />
       </body>
     </html>
   );
