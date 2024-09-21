@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export function HeroProduct() {
   return (
-    <section className="section-default mobile-px py-4">
+    <section className="section-default mobile-px">
       <div className="carousel-container flex flex-col">
         <div className="absolute inset-0 z-10 bg-black/25 pointer-events-none" />
         <div className="h-full w-full relative">

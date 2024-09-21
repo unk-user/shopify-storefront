@@ -10,7 +10,7 @@ export async function FeaturedProducts() {
   });
 
   return (
-    <section className="section-default pb-16 pt-24">
+    <section className="section-default">
       <div className='flex items-center mb-4'>
         <h2 className='text-lg font-semibold uppercase'>Featured Products</h2>
         <Link href="/products" className='underline ml-auto'>View all</Link>

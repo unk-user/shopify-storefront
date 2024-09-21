@@ -30,7 +30,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="section-default mobile-px flex flex-col gap-8 py-16">
+    <section className="section-default mobile-px flex flex-col gap-8">
       <h2 className="text-2xl font-semibold text-center">
         Signature Keychron Features
       </h2>

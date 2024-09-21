@@ -25,7 +25,7 @@ const benefits = [
 
 export function BenefitsSection() {
   return (
-    <section className="section-dafault mobile-px py-8">
+    <section className="section-dafault mobile-px">
       <h2 className="text-2xl font-semibold text-center">
         Why Choose Keychron
       </h2>

@@ -4,7 +4,7 @@ import { ArrowUpRight } from 'react-feather';
 
 export function HeroSection() {
   return (
-    <section className="section-default mobile-px py-16">
+    <section className="section-default mobile-px pt-16">
       <div className="mx-auto lg:text-center *:lg:mx-auto">
         <h1
           className="text-4xl font-semibold max-w-4xl bg-gradient-to-r from-storefront-primary-300 to-primary-foreground
