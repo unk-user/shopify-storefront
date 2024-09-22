@@ -18,6 +18,7 @@ export default async function CollectionPage({
     collection: params.collection,
     sortKey,
     reverse,
+    limit: 100,
   });
   const resultsText = products.length > 1 ? 'Results' : 'Result';
 

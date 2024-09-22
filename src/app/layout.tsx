@@ -43,7 +43,7 @@ export default async function RootLayout({
           toastOptions={{ className: 'mt-14 md:mt-8' }}
           richColors
         />
-        <footer className="w-screen h-[524px] bg-secondary" />
+        <footer className="w-full h-[524px] bg-secondary" />
       </body>
     </html>
   );
